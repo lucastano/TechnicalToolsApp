@@ -1,0 +1,1 @@
+export const itemsMenu = ["Reparaciones","Clientes","Reportes"]
