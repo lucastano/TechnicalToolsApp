@@ -1,0 +1,24 @@
+# Ignorar dependencias
+node_modules/
+
+# Ignorar archivos de logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignorar entorno de desarrollo
+.env
+.env.local
+
+# Ignorar caché de Vite
+dist/
+.vite/
+
+# Ignorar configuraciones del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Ignorar configuraciones de IDEs/editores
+.vscode/
+.idea/
+*.swp
