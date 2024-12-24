@@ -4,6 +4,7 @@ import { Login } from './Login'
 import { NavBar } from './NavBar'
 import { ListadoReparaciones } from './ListadoReparaciones'
 import { HomeEmpty } from './HomeEmpty'
+import { UserProfile } from './UserProfile'
 
 export const Home = () => {
     const [autenticacion, setAutenticacion] = useState(false)
@@ -18,6 +19,7 @@ export const Home = () => {
     <Routes>
         <Route path='/' element={<HomeEmpty/>}/>
         <Route path='/Reparaciones' element = {<ListadoReparaciones/>}/>
+        <Route path= '/PerfilUsuario' element = {<UserProfile/>}/>
    </Routes>
   </>
   )

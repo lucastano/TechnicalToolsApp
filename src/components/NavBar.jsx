@@ -18,7 +18,7 @@ import { useDispatch } from 'react-redux';
 import { logout } from '../store/auth/authSlice';
 
 const pages = ['Reparaciones', 'Clientes', 'Tecnicos','Reportes'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['UserProfile', 'Account', 'Dashboard', 'Logout'];
 export const NavBar = ({setAutenticacion}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch()
@@ -48,6 +48,10 @@ export const NavBar = ({setAutenticacion}) => {
       dispatch(logout())
       navigate("/")
     }
+    if(itemMenu == "UserProfile"){
+      navigate("/PerfilUsuario")
+    }
+     
     
   }
 

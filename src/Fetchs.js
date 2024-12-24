@@ -155,7 +155,8 @@ async function getReparacionesPorCI(cedula, dispatch) {
       throw new Error(`HTTP error! status: ${respuesta.status}`);
     } else {
       const datos = await respuesta.json();
-      dispatch(cargarReparaciones(datos.reparaciones));
+      console.log(datos)
+      dispatch(cargarReparaciones(datos));
     }
   } catch (error) {
     throw error;

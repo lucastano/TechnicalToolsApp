@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-
+import { useSelector } from 'react-redux';
 
 export const authSlice = createSlice({
      name: 'auth',
@@ -28,7 +28,10 @@ export const authSlice = createSlice({
            logout :(state,payload) => {
 
             state.sesion= null;
-
+            state.reparaciones = [];
+            state.clientes = [];
+            state.tecnicos = [];
+            state.administradores = []
            },
            cargarTecnicos:(state,action)=>{
             console.log("en cargar tecnicos: "+action.payload)
@@ -63,3 +66,8 @@ export const authSlice = createSlice({
 
 // 
 export const { loginUser,logout,cargarTecnicos,cargarClientes,cargarReparaciones,agregarCliente,agregarTecnico,agregarReparacion,cargarAdministradores,agregarAdministrador} = authSlice.actions;
+export const selectUsuario = (state)=>state.auth.sesion;
+export const selectClientes = (state)=>state.auth.clientes;
+export const selectTecnicos =(state)=>state.auth.tecnicos;
+export const selectAdministradores =(state)=>state.auth.administradores;
+export const selectReparaciones =(state)=>state.auth.reparaciones;

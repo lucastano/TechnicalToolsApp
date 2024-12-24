@@ -3,12 +3,12 @@ import { useState } from 'react';
 import {login,getClientes,getTecnicos, getReparaciones, getReparacionesPorCI} from '../Fetchs'
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-// import { checkingAuthentication } from '../store/auth/thunks';
 import { Avatar, Box, Button, Container, FormControl, FormControlLabel, Grid2, InputLabel, Link, MenuItem, Paper, Select, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from "@mui/icons-material/lockOutlined"
 import { CheckBox } from '@mui/icons-material';
 import { loginUser } from '../store/auth/authSlice';
-
+import { AlertMsg } from './AlertMsg';
+import PropTypes from "prop-types";
 export const Login = ({setAutenticacionL}) => {
   
     const dispatch = useDispatch()
@@ -17,6 +17,8 @@ export const Login = ({setAutenticacionL}) => {
     const [Correo, setCorreo] = useState("")
     const [password, setPassword] = useState("")
     const [Rol, setRol] = useState("")
+    const [error, seterror] = useState(false)
+    const [ValorBtnLogin, setValorBtnLogin] = useState("Iniciar")
     const navigate = useNavigate();
     
     useEffect(() => {
@@ -43,8 +45,23 @@ export const Login = ({setAutenticacionL}) => {
     }
     const handleLogin = async (event)=>{
       event.preventDefault();
-      const response = await login(Correo,password,Rol)
-      if (response.statusCode == 200){
+      // const response = await login(Correo,password,Rol)
+      let seguir = true
+      let response = null
+      setValorBtnLogin("Cargando...")
+      try
+      {
+       response = await login(Correo,password,Rol)
+        seguir = true
+        console.log(response)
+
+      }
+      catch(error)
+      {
+        seguir = false
+
+      }
+      if (seguir){
         const user = {
           id:response.usuario.id,
           nombre:response.usuario.nombre,
@@ -82,6 +99,12 @@ export const Login = ({setAutenticacionL}) => {
         setAutenticacionL(true)
         setShow(false)
         
+      }else{
+        setValorBtnLogin("Iniciar")
+        seterror(true)
+        setTimeout(() => {
+          seterror(false) // Ocultar la alerta después de 3 segundos
+        }, 3000);
       }
     }
   return (
@@ -132,7 +155,7 @@ export const Login = ({setAutenticacionL}) => {
             </Select>
           </FormControl>
           <Button type='submit' variant='contained' fullWidth sx={{mt:1}}>
-            Ingresar
+           {ValorBtnLogin}
           </Button>
         </Box>
         <Grid2 container justifyContent='space-between' sx={{mt:1}}>
@@ -140,7 +163,15 @@ export const Login = ({setAutenticacionL}) => {
             <Link>Perdi la contraseña</Link>
           </Grid2>
         </Grid2>
+        {error && <AlertMsg msg={"Error de inicio"} type={"error"} />}
       </Paper>
+    
+     
+      
+    
     </Container>
   )
 }
+Login.propTypes = {
+  setAutenticacionL: PropTypes.func.isRequired, // Asegura que sea una función
+};
