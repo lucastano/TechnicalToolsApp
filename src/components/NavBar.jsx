@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { itemsMenu } from '../MenuItems';
 import { useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
@@ -14,16 +14,18 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import { useDispatch } from 'react-redux';
+import { selectUsuario } from '../store/auth'
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../store/auth/authSlice';
 
-const pages = ['Reparaciones', 'Clientes', 'Tecnicos','Reportes'];
-const settings = ['UserProfile', 'Account', 'Dashboard', 'Logout'];
+ let pages = ['Reparaciones', 'Clientes', 'Tecnicos','Reportes'];
+let settings = ['Perfil', 'Account', 'Dashboard', 'Cerrar sesion'];
 export const NavBar = ({setAutenticacion}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch()
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const usuario = useSelector(selectUsuario);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -41,18 +43,23 @@ export const NavBar = ({setAutenticacion}) => {
   };
 
   const menuOptions =(itemMenu)=>{
-    if(itemMenu == "Logout"){
-      console.log("hice logout")
+    if(itemMenu == "Cerrar sesion"){
       localStorage.setItem("Token","")
       setAutenticacion(false)
       dispatch(logout())
       navigate("/")
     }
-    if(itemMenu == "UserProfile"){
+    if(itemMenu == "Perfil"){
       navigate("/PerfilUsuario")
     }
      
     
+  }
+
+  const tabOptions = (itemTab)=>{
+    if(itemTab =="Reparaciones"){
+      navigate("/Reparaciones")
+    }
   }
 
 
@@ -137,7 +144,8 @@ export const NavBar = ({setAutenticacion}) => {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                // onClick={handleCloseNavMenu}
+                onClick={()=>tabOptions(page)}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page}

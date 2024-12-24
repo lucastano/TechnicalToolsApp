@@ -3,9 +3,8 @@ import { useState } from 'react';
 import {login,getClientes,getTecnicos, getReparaciones, getReparacionesPorCI} from '../Fetchs'
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Avatar, Box, Button, Container, FormControl, FormControlLabel, Grid2, InputLabel, Link, MenuItem, Paper, Select, TextField, Typography } from '@mui/material';
+import { Avatar, Box, Button, Container, FormControl, Grid2, InputLabel, Link, MenuItem, Paper, Select, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from "@mui/icons-material/lockOutlined"
-import { CheckBox } from '@mui/icons-material';
 import { loginUser } from '../store/auth/authSlice';
 import { AlertMsg } from './AlertMsg';
 import PropTypes from "prop-types";
@@ -19,8 +18,7 @@ export const Login = ({setAutenticacionL}) => {
     const [Rol, setRol] = useState("")
     const [error, seterror] = useState(false)
     const [ValorBtnLogin, setValorBtnLogin] = useState("Iniciar")
-    const navigate = useNavigate();
-    
+
     useEffect(() => {
       const Token = localStorage.getItem("Token")
       console.log(Token)
@@ -31,13 +29,12 @@ export const Login = ({setAutenticacionL}) => {
         setShow(true)
       }
     }, [])
+
     const onChangeCorreo =({target})=>{
-      console.log(target.value)
         setCorreo(target.value);
      
     }
     const onChangePassword =({target})=>{
-      console.log(target.value)
         setPassword(target.value);
     }
     const onChangeRol =({target})=>{
@@ -45,7 +42,6 @@ export const Login = ({setAutenticacionL}) => {
     }
     const handleLogin = async (event)=>{
       event.preventDefault();
-      // const response = await login(Correo,password,Rol)
       let seguir = true
       let response = null
       setValorBtnLogin("Cargando...")
@@ -53,8 +49,6 @@ export const Login = ({setAutenticacionL}) => {
       {
        response = await login(Correo,password,Rol)
         seguir = true
-        console.log(response)
-
       }
       catch(error)
       {

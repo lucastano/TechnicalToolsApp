@@ -20,7 +20,9 @@ export const authSlice = createSlice({
                userEmail : action.payload.email,
                userRol : action.payload.rol,
                userToken : action.payload.token,
-               userId : action.payload.id
+               userId : action.payload.id,
+               userAddres:action.payload.direccion,
+               userCi : action.payload.ci 
             }
             state.sesion = sesionUser
             

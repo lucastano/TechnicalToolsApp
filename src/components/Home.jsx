@@ -5,11 +5,11 @@ import { NavBar } from './NavBar'
 import { ListadoReparaciones } from './ListadoReparaciones'
 import { HomeEmpty } from './HomeEmpty'
 import { UserProfile } from './UserProfile'
-
 export const Home = () => {
+
     const [autenticacion, setAutenticacion] = useState(false)
     const [show, setshow] = useState(false)
-   
+
    
     
   return (
