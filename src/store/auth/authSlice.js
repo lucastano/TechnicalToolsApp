@@ -1,5 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { useSelector } from 'react-redux';
+
+const formatearFecha = (fechaISO) => {
+      return new Date(fechaISO).toLocaleDateString("es-ES");
+    };
+
 
 export const authSlice = createSlice({
      name: 'auth',
@@ -8,7 +12,11 @@ export const authSlice = createSlice({
          reparaciones:[],
          clientes : [],
          tecnicos : [],
-         administradores:[]
+         administradores:[],
+         empresa:{
+            
+         },
+         productos:[]
       },
       reducers: {
            loginUser :(state,action) => {
@@ -22,7 +30,8 @@ export const authSlice = createSlice({
                userToken : action.payload.token,
                userId : action.payload.id,
                userAddres:action.payload.direccion,
-               userCi : action.payload.ci 
+               userCi : action.payload.ci,
+               userEmpresa: action.payload.idEmpresa
             }
             state.sesion = sesionUser
             
@@ -34,9 +43,9 @@ export const authSlice = createSlice({
             state.clientes = [];
             state.tecnicos = [];
             state.administradores = []
+            state.empresa = {}
            },
            cargarTecnicos:(state,action)=>{
-            console.log("en cargar tecnicos: "+action.payload)
             state.tecnicos = action.payload
            },
             cargarClientes:(state,action)=>{
@@ -44,10 +53,20 @@ export const authSlice = createSlice({
 
             },
             cargarReparaciones:(state,action)=>{
-                  state.reparaciones = action.payload
+                  state.reparaciones = action.payload.map((r) => ({
+                        ...r,
+                        fecha: formatearFecha(r.fecha) // Formatear la fecha aquí
+                        }));
             },
             cargarAdministradores:(state,action)=>{   
                state.administradores = action.payload
+            },
+            cargarEmpresa:(state,action) =>{
+                  state.empresa = action.payload;
+            },
+            cargarProductos:(state,action)=>{
+                  console.log('enproductos', action.payload)
+                  state.productos = action.payload
             },
             agregarAdministrador:(state,action)=>{
                state.administradores = [...state.administradores,action.payload]
@@ -62,14 +81,18 @@ export const authSlice = createSlice({
             },
             agregarReparacion : (state,action)=>{
                   state.reparaciones = [...state.reparaciones,action.payload]
+            },
+            modificarEmpresa : (state,action)=>{
+                  state.empresa=action.payload
+
             }
    }
 });
-
-// 
-export const { loginUser,logout,cargarTecnicos,cargarClientes,cargarReparaciones,agregarCliente,agregarTecnico,agregarReparacion,cargarAdministradores,agregarAdministrador} = authSlice.actions;
+export const { loginUser,logout,cargarTecnicos,cargarClientes,cargarReparaciones,agregarCliente,agregarTecnico,agregarReparacion,cargarAdministradores,agregarAdministrador,cargarEmpresa,modificarEmpresa,cargarProductos} = authSlice.actions;
 export const selectUsuario = (state)=>state.auth.sesion;
 export const selectClientes = (state)=>state.auth.clientes;
 export const selectTecnicos =(state)=>state.auth.tecnicos;
 export const selectAdministradores =(state)=>state.auth.administradores;
 export const selectReparaciones =(state)=>state.auth.reparaciones;
+export const selectEmpresa = (state) => state.auth.empresa;
+export const selectProductos =(state) => state.auth.productos;

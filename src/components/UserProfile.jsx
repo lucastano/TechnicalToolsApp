@@ -5,6 +5,8 @@ import { useSelector } from 'react-redux'
 import { selectUsuario } from '../store/auth'
 import { Container } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
+import { Update } from '@mui/icons-material'
+import KeyboardReturnSharpIcon from '@mui/icons-material/KeyboardReturnSharp';
 
 export const UserProfile = () => {
     const usuario = useSelector(selectUsuario);
@@ -16,9 +18,9 @@ export const UserProfile = () => {
    
   return (
     <>
-    <Encabezados Titulo={"Perfil de Usuario"}/>
+    {/* <Encabezados/> */}
     <Container  >
-     <Paper elevation={10} sx={{marginLeft:10,marginRight:10, marginTop:2,padding:2}}>
+     <Paper elevation={5} sx={{marginLeft:10,marginRight:10, marginTop:2,padding:2}}>
        <Typography component="h2" variant='h5' sx={{textAlign:'left'}}>
          {usuario.userRol+" Nro: "+usuario.userId}
         </Typography>
@@ -81,10 +83,10 @@ export const UserProfile = () => {
 
         }
         </Box>
-        <Button sx={{margin:2}} variant="contained" size="small" color='success'>
+        <Button sx={{margin:2, borderRadius:1,p:1}} variant="contained" size="small" color='success' startIcon={<Update/>}>
           Modificar
         </Button>
-        <Button onClick={handleVolver} sx={{margin:2}} variant="contained" size="small" color="error">
+        <Button onClick={handleVolver} sx={{p:1,margin:2,borderRadius:1}} endIcon={<KeyboardReturnSharpIcon/>} variant="contained" size="small" color="error"  >
           Volver
         </Button>
      </Paper>

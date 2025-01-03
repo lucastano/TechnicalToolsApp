@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react';
-import {login,getClientes,getTecnicos, getReparaciones, getReparacionesPorCI} from '../Fetchs'
+import {login,getClientes,getTecnicos, getReparaciones, getReparacionesPorCI, getEmpresa,getProductos} from '../Fetchs'
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Avatar, Box, Button, Container, FormControl, Grid2, InputLabel, Link, MenuItem, Paper, Select, TextField, Typography } from '@mui/material';
@@ -16,7 +16,8 @@ export const Login = ({setAutenticacionL}) => {
     const [Correo, setCorreo] = useState("")
     const [password, setPassword] = useState("")
     const [Rol, setRol] = useState("")
-    const [error, seterror] = useState(false)
+    const [errorLogin, seterrorLogin] = useState(false)
+    const [errorLoginDsc, seterrorLoginDsc] = useState("")
     const [ValorBtnLogin, setValorBtnLogin] = useState("Iniciar")
 
     useEffect(() => {
@@ -48,12 +49,14 @@ export const Login = ({setAutenticacionL}) => {
       try
       {
        response = await login(Correo,password,Rol)
-        seguir = true
+       seguir = true
+       console.log("RESPONSE EN LOGIN: "+response.usuario.idEmpresa)
       }
       catch(error)
       {
+        seterrorLogin(true)
+        seterrorLoginDsc(error)
         seguir = false
-
       }
       if (seguir){
         const user = {
@@ -65,8 +68,10 @@ export const Login = ({setAutenticacionL}) => {
           ci:response.usuario.ci,
           direccion:response.usuario.direccion,
           telefono:response.usuario.telefono,
-          token:response.token
+          token:response.token,
+          idEmpresa:response.usuario.idEmpresa
         }
+        console.log("id de la empresa en logn"+user.idEmpresa)
         dispatch(loginUser(user))
         const rol = response.usuario.rol
         if(rol == 'Administrador' || rol == 'Tecnico' ){
@@ -74,18 +79,21 @@ export const Login = ({setAutenticacionL}) => {
             await getClientes(dispatch)
             await getTecnicos(dispatch)
             await getReparaciones(dispatch)
+            await getEmpresa(dispatch,user.idEmpresa)
+            await getProductos(dispatch)
           }
           else
           {
             await getClientes(dispatch)
             await getReparaciones(dispatch)
-
+            await getEmpresa(dispatch,user.idEmpresa)
+            await getProductos(dispatch)
           }
 
         }
         else
         {
-          await getReparacionesPorCI(user.ci,dispatch)
+          // await getReparacionesPorCI(user.ci,dispatch)
 
         }
        
@@ -95,13 +103,23 @@ export const Login = ({setAutenticacionL}) => {
         
       }else{
         setValorBtnLogin("Iniciar")
-        seterror(true)
+        seterrorLogin(true)
         setTimeout(() => {
-          seterror(false) // Ocultar la alerta después de 3 segundos
+          seterrorLogin(false) // Ocultar la alerta después de 3 segundos
         }, 3000);
       }
     }
   return (
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh', // Altura completa de la ventana
+        backgroundColor: 'background.default', // Opcional, para un fondo limpio
+        backgroundColor: '#2196f3'
+      }}
+    >
 
     <Container maxWidth="xs" >
       <Paper elevation={10} sx={{marginTop:10,padding:2}}>
@@ -157,13 +175,10 @@ export const Login = ({setAutenticacionL}) => {
             <Link>Perdi la contraseña</Link>
           </Grid2>
         </Grid2>
-        {error && <AlertMsg msg={"Error de inicio"} type={"error"} />}
+        {errorLogin && <AlertMsg msg={errorLoginDsc} type={"error"} />}
       </Paper>
-    
-     
-      
-    
     </Container>
+    </Box>
   )
 }
 Login.propTypes = {

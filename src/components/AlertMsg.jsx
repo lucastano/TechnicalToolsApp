@@ -3,6 +3,7 @@ import Alert from '@mui/material/Alert';
 
 export const AlertMsg = ({msg,type}) => {
   return (
-    <Alert severity={type}>{msg}</Alert>
+     <Alert sx={{m:1}} severity={type}>{msg}</Alert>
+   
   )
 }
