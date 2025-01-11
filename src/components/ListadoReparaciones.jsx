@@ -10,7 +10,7 @@ import Paper from '@mui/material/Paper';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import { selectEmpresa, selectReparaciones } from '../store/auth';
+import { selectEmpresa, selectReparaciones, selectSucursal, selectUsuario } from '../store/auth';
 import { useSelector } from 'react-redux';
 import {  MenuItem, TableSortLabel, Tooltip } from '@mui/material';
 import Button from '@mui/material/Button';
@@ -46,30 +46,33 @@ export const ListadoReparaciones = () => {
  
   const rep = useSelector(selectReparaciones);
   const emp = useSelector(selectEmpresa);
-  const [reparaciones, setreparaciones] = useState([])
-  const [tab, setTab] =  useState("")
+  const suc = useSelector(selectSucursal);
+  const usu = useSelector(selectUsuario);
+  const [tab, setTab] =  useState("EnTaller")
   const [reparacionesFiltradas, setreparacionesFiltradas] = useState([])
+  const [rolUsuario, setrolUsuario] = useState("")
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('id');
   const [openNewRep,setOpenNewRep] = useState(false)
   const open = Boolean(anchorEl);
   const navigate = useNavigate()
+
   useEffect(() => {
-    const elementosFiltrados = reparaciones.filter(r => r.estado === "EnTaller");;
+    setrolUsuario(usu.userRol)
   }, [])
   
- 
-  useEffect(() => {
-    setreparaciones(rep)
-    setTab("EnTaller")
-  }, [rep])
 
   useEffect(() => {
-    const elementosFiltrados = reparaciones.filter(r => r.estado === tab);
+    const elementosFiltrados = rep.filter(r => r.estado === tab);
+    setreparacionesFiltradas(elementosFiltrados)
+  }, [rep])
+  
+  useEffect(() => {
+    const elementosFiltrados = rep.filter(r => r.estado === tab);
     setreparacionesFiltradas(elementosFiltrados)
   }, [tab])
-
+  
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -109,7 +112,8 @@ export const ListadoReparaciones = () => {
   const  handlePrint = async(id)=>{
     const idReparacion = id
     const idEmpresa = emp.id
-    await generarOrdSrv(idReparacion,idEmpresa);
+    const idSucursal = suc.id
+    await generarOrdSrv(idReparacion,idEmpresa,idSucursal);
   }
 
   const handleNewRep =() =>{
@@ -130,7 +134,7 @@ export const ListadoReparaciones = () => {
           <Tab value="Reparada" label="Reparadas" />
           <Tab value="Entregada" label="Entregadas" />
         </Tabs>
-        <Button onClick={handleNewRep} size="small" sx={{ p: 1, margin: 2, borderRadius: 1 }} endIcon={<AddCircleIcon />} variant="contained" color="success">
+        <Button disabled = {rolUsuario=="Administrador"} onClick={handleNewRep} size="small" sx={{ p: 1, margin: 2, borderRadius: 1 }} endIcon={<AddCircleIcon />} variant="contained" color="success">
           Nueva
         </Button>
       </Box>

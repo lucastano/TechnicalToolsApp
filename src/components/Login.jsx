@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react';
-import {login,getClientes,getTecnicos, getReparaciones, getReparacionesPorCI, getEmpresa,getProductos} from '../Fetchs'
+import {login,getClientes,getTecnicos, getReparaciones, getReparacionesPorCI, getEmpresa,getProductos, getSucursal} from '../Fetchs'
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Avatar, Box, Button, Container, FormControl, Grid2, InputLabel, Link, MenuItem, Paper, Select, TextField, Typography } from '@mui/material';
@@ -42,6 +42,7 @@ export const Login = ({setAutenticacionL}) => {
         setRol(target.value)
     }
     const handleLogin = async (event)=>{
+      let user = {}
       event.preventDefault();
       let seguir = true
       let response = null
@@ -50,7 +51,6 @@ export const Login = ({setAutenticacionL}) => {
       {
        response = await login(Correo,password,Rol)
        seguir = true
-       console.log("RESPONSE EN LOGIN: "+response.usuario.idEmpresa)
       }
       catch(error)
       {
@@ -59,7 +59,7 @@ export const Login = ({setAutenticacionL}) => {
         seguir = false
       }
       if (seguir){
-        const user = {
+         user = {
           id:response.usuario.id,
           nombre:response.usuario.nombre,
           apellido:response.usuario.apellido,
@@ -69,23 +69,24 @@ export const Login = ({setAutenticacionL}) => {
           direccion:response.usuario.direccion,
           telefono:response.usuario.telefono,
           token:response.token,
-          idEmpresa:response.usuario.idEmpresa
+          idEmpresa:response.usuario.idEmpresa,
+          idSucursal:response.usuario.idSucursal
         }
-        console.log("id de la empresa en logn"+user.idEmpresa)
         dispatch(loginUser(user))
         const rol = response.usuario.rol
         if(rol == 'Administrador' || rol == 'Tecnico' ){
           if(rol == 'Administrador'){
             await getClientes(dispatch)
             await getTecnicos(dispatch)
-            await getReparaciones(dispatch)
+            await getReparaciones(dispatch,user)
             await getEmpresa(dispatch,user.idEmpresa)
+            await getSucursal(dispatch,user.idSucursal)
             await getProductos(dispatch)
           }
           else
           {
             await getClientes(dispatch)
-            await getReparaciones(dispatch)
+            await getReparaciones(dispatch,user)
             await getEmpresa(dispatch,user.idEmpresa)
             await getProductos(dispatch)
           }

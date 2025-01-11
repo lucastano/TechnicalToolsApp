@@ -16,6 +16,9 @@ export const authSlice = createSlice({
          empresa:{
             
          },
+         sucursal:{
+
+         },
          productos:[]
       },
       reducers: {
@@ -31,7 +34,8 @@ export const authSlice = createSlice({
                userId : action.payload.id,
                userAddres:action.payload.direccion,
                userCi : action.payload.ci,
-               userEmpresa: action.payload.idEmpresa
+               userEmpresa: action.payload.idEmpresa,
+               userSucursal:action.payload.idSucursal
             }
             state.sesion = sesionUser
             
@@ -59,20 +63,23 @@ export const authSlice = createSlice({
                         }));
             },
             cargarAdministradores:(state,action)=>{   
-               state.administradores = action.payload
+               state.administradores = action.payload;
             },
             cargarEmpresa:(state,action) =>{
                   state.empresa = action.payload;
             },
+            cargarSucursal:(state,action) =>{
+                  state.sucursal = action.payload;
+            },
             cargarProductos:(state,action)=>{
-                  console.log('enproductos', action.payload)
-                  state.productos = action.payload
+                  state.productos = action.payload;
             },
             agregarAdministrador:(state,action)=>{
                state.administradores = [...state.administradores,action.payload]
 
             },
             agregarCliente :(state,action)=>{
+                  console.log('action.payload', action.payload)
                   state.clientes = [...state.clientes,action.payload]
             }
             ,
@@ -80,15 +87,20 @@ export const authSlice = createSlice({
                   state.tecnicos = [...state.tecnicos,action.payload]
             },
             agregarReparacion : (state,action)=>{
+                  action.payload.fecha = formatearFecha(action.payload.fecha)
                   state.reparaciones = [...state.reparaciones,action.payload]
             },
             modificarEmpresa : (state,action)=>{
                   state.empresa=action.payload
 
+            },
+            modificarSucursal : (state,action)=>{
+                  state.sucursal=action.payload
+
             }
    }
 });
-export const { loginUser,logout,cargarTecnicos,cargarClientes,cargarReparaciones,agregarCliente,agregarTecnico,agregarReparacion,cargarAdministradores,agregarAdministrador,cargarEmpresa,modificarEmpresa,cargarProductos} = authSlice.actions;
+export const { loginUser,logout,cargarTecnicos,cargarClientes,cargarReparaciones,agregarCliente,agregarTecnico,agregarReparacion,cargarAdministradores,agregarAdministrador,cargarEmpresa,modificarEmpresa,cargarProductos,cargarSucursal,modificarSucursal} = authSlice.actions;
 export const selectUsuario = (state)=>state.auth.sesion;
 export const selectClientes = (state)=>state.auth.clientes;
 export const selectTecnicos =(state)=>state.auth.tecnicos;
@@ -96,3 +108,4 @@ export const selectAdministradores =(state)=>state.auth.administradores;
 export const selectReparaciones =(state)=>state.auth.reparaciones;
 export const selectEmpresa = (state) => state.auth.empresa;
 export const selectProductos =(state) => state.auth.productos;
+export const selectSucursal =(state) => state.auth.sucursal;

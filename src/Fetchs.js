@@ -1,4 +1,4 @@
-import { cargarTecnicos, cargarClientes, cargarAdministradores, cargarReparaciones, cargarEmpresa,modificarEmpresa, cargarProductos } from "./store/auth";
+import { cargarTecnicos, cargarClientes, cargarAdministradores, cargarReparaciones, cargarEmpresa,modificarEmpresa, cargarProductos, cargarSucursal, modificarSucursal, agregarReparacion, agregarCliente } from "./store/auth";
 
 // const urlBase = 'https://proyectoserviceapirest20240901142836.azurewebsites.net/api/'
 const urlBase ='https://localhost:7105'
@@ -39,9 +39,37 @@ async function login(user, password, rol) {
 
 
 }
+
+async function postCliente(dispatch,cliente){
+  console.log('cliente', cliente)
+const url = urlBase + '/api/Clientes'
+const token = localStorage.getItem("Token");
+const opciones ={
+  method:"POST",
+  headers:{
+    'Content-Type':'application/json',
+    Authorization:`Bearer ${token}`
+  },
+  body:JSON.stringify(cliente)
+}
+try{
+  const response = await fetch(url,opciones);
+  if(!response.ok){
+    const errorData = await response.json();
+    throw new Error(errorData.message)
+  }
+  const data = await response.json();
+  dispatch(agregarCliente(data))
+  return { success: true, data }; 
+}
+catch(error){
+ return  { success: false, message: error.message }
+}
+
+
+}
 async function getClientes(dispatch) {
   const url = urlBase + '/api/Clientes'
-  console.log("ruta: " + url)
   const token = localStorage.getItem("Token");
   const opciones = {
     method: "GET",
@@ -111,7 +139,7 @@ async function getAdministradores(dispatch) {
     throw error;
   }
 }
-async function getReparaciones(dispatch) {
+async function getReparaciones(dispatch,user) {
   const url = urlBase + '/api/Reparaciones/TodasLasReparaciones';
   const token = localStorage.getItem("Token");
   const opciones = {
@@ -121,14 +149,21 @@ async function getReparaciones(dispatch) {
       Authorization: `Bearer ${token}`,
     },
   };
-
+  console.log('user', user)
   try {
     const respuesta = await fetch(url, opciones);
     if (!respuesta.ok) {
       throw new Error(`HTTP error! status: ${respuesta.status}`);
     } else {
       const datos = await respuesta.json();
-      dispatch(cargarReparaciones(datos.reparaciones));
+      const reparaciones = datos.reparaciones;
+      if(user.rol==="Tecnico"){
+        const reparacionesFiltradas = reparaciones.filter(r=>r.tecnicoId===user.id);
+        dispatch(cargarReparaciones(reparacionesFiltradas));
+      }else{
+        dispatch(cargarReparaciones(reparaciones));
+      }
+      
     }
   } catch (error) {
     throw error;
@@ -180,21 +215,46 @@ async function getEmpresa(dispatch,idEmpresa){
     console.error('Error al obtener la foto:', error);
   }
 }
-async function fetModificarEmpresa (data,dispatch) {
+
+async function getSucursal(dispatch,idSucursal){
+  console.log("sucursal en fetch"+idSucursal)
+  const url = urlBase + `/api/Sucursales/ObtenerPorId?id=${idSucursal}`
+  const token = localStorage.getItem("Token");
+  const opciones = {
+    method: "GET",
+    headers: {
+      accept: "*/*",
+      Authorization: `Bearer ${token}`,
+    },
+  }
+  try {
+    const response = await fetch(url,opciones); // Cambia esta URL según tu API
+    let data = await response.json();
+    if (data ) {
+      dispatch(cargarSucursal(data))
+    }
+  } catch (error) {
+    console.error('Error al obtener la foto:', error);
+  }
+}
+async function fetModificarEmpresa (dataEmpresa,dispatch) {
+  console.log('dataEmpresa', dataEmpresa)
   const url = urlBase + "/api/Empresas"
   const token = localStorage.getItem("Token");
+  console.log()
   const formData = new FormData();
-      formData.append("id",data.id)
-      formData.append("nombre", data.nombre);   // Nombre de la empresa
-      formData.append("telefono", data.telefono); // Teléfono de la empresa
-      formData.append("direccion", data.direccion); // Dirección de la empresa
-      formData.append("email", data.email);     // Email de la empresa
-      if (data.file) {
+      formData.append("Id",dataEmpresa.id)
+      formData.append("NombreFantasia", dataEmpresa.nombreFantasia);   // Nombre de la empresa
+      formData.append("RazonSocial", dataEmpresa.razonSocial); // Teléfono de la empresa
+      formData.append("NumeroRUT", dataEmpresa.numeroRut); // Dirección de la empresa
+      formData.append("PoliticasEmpresa", dataEmpresa.politicasEmpresa);
+           // Email de la empresa
+      if (dataEmpresa.file) {
         console.log("file no es null")
-        formData.append("foto", data.file); // La imagen seleccionada
+        formData.append("Foto", dataEmpresa.file); // La imagen seleccionada
       }else{
         console.log("file es null")
-        formData.append("foto", null);
+        formData.append("Foto", null);
       }
 
   try {
@@ -218,8 +278,40 @@ async function fetModificarEmpresa (data,dispatch) {
   }
 };
 
-async function generarOrdSrv (idReparacion,idEmpresa){
-const url = urlBase + `/api/Reparaciones/GenerarOrdSrv?idReparacion=${idReparacion}&idEmpresa=${idEmpresa}`
+async function fetModificarSucursal (dataSucursal,dispatch) {
+  console.log('dataSucursal', dataSucursal.id)
+  const url = urlBase + "/api/Sucursales"
+  const token = localStorage.getItem("Token");
+  const data = {
+    id:dataSucursal.id,
+    codigoSucursal:dataSucursal.codigoSucursal,
+    direccion:dataSucursal.direccion,
+    telefono:dataSucursal.telefono,
+    email:dataSucursal.email
+  }
+  console.log('data', data)
+  try {
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        'Content-Type':'application/json',
+        Authorization: `Bearer ${token}`  
+      },
+      body:JSON.stringify(data)
+    });
+    console.log('response', response)
+    if (!response.ok) {
+      throw new Error("Error al modificar la empresa");
+    }
+    const result = await response.json();
+    dispatch(modificarSucursal(result))
+    return response.ok;
+  } catch (error) {
+  }
+};
+
+async function generarOrdSrv (idReparacion,idEmpresa,idSucursal){
+const url = urlBase + `/api/Reparaciones/GenerarOrdSrv?idReparacion=${idReparacion}&idEmpresa=${idEmpresa}&idSucursal=${idSucursal}`
 const token = localStorage.getItem("Token");
 try
 {
@@ -286,6 +378,31 @@ async function getProductos(dispatch){
     console.error('Error al obtener la foto:', error);
   }
 }
+async function postReparacion(dispatch,data){
+  console.log('data', data)
+  const url = urlBase + `/api/Reparaciones`
+  const token = localStorage.getItem("Token");
+  const opciones = {
+    method:"POST",
+    headers:{
+      'Content-Type':'application/json',
+    },
+    body:JSON.stringify(data),
+  }
+  try{
+    const response = await fetch(url,opciones);
+    if(!response.ok){
+      const errorData = await response.json();
+      throw new Error(errorData.message)
+    }
+    const data = await response.json();
+    dispatch(agregarReparacion(data))
+    return { success: true, data }; 
+  }
+  catch(error){
+   return  { success: false, message: error.message }
+  }
+}
 export {
   login,
   getClientes,
@@ -296,5 +413,9 @@ export {
   getEmpresa,
   fetModificarEmpresa,
   generarOrdSrv,
-  getProductos
+  getProductos,
+  getSucursal,
+  fetModificarSucursal,
+  postReparacion,
+  postCliente
 }

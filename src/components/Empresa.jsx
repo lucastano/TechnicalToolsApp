@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { Encabezados } from './Encabezados'
 import { Box, Button, Card, CardActionArea, CardContent, CardMedia, Container, Divider, Paper, TextField, Typography } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux';
-import { selectEmpresa, selectUsuario } from '../store/auth';
+import { selectEmpresa, selectSucursal, selectUsuario } from '../store/auth';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
 import { BoxImagen } from './BoxImagen';
-import { fetModificarEmpresa } from '../Fetchs';
+import { fetModificarEmpresa, fetModificarSucursal } from '../Fetchs';
 import { AlertMsg } from './AlertMsg';
 import { Update } from '@mui/icons-material';
 import KeyboardReturnSharpIcon from '@mui/icons-material/KeyboardReturnSharp';
@@ -27,14 +27,26 @@ export const Empresa = () => {
 
     const dispacth =  useDispatch()
     const empresa = useSelector(selectEmpresa);
+    const sucursal = useSelector(selectSucursal)
     const usuario = useSelector(selectUsuario);
+    //DATOS DE EMPRESA 
     const [id, setid] = useState(0)
+    const [idSucursal, setidSucursal] = useState(0)
     const [nombre, setnombre] = useState("")
+    const [razonSocial, setrazonSocial] = useState("")
+    const [numeroRut, setnumeroRut] = useState("")
+    const [politicasEmpresa, setpoliticasEmpresa] = useState("")
+    //FIN DATOS DE EMPRESA
+
+    //DATOS DE SUCURSAL
+    const [codigoSucursal, setcodigoSucursal] = useState("")
     const [direccion, setdireccion] = useState("")
     const [telefono, settelefono] = useState("")
     const [email, setemail] = useState("")
     const [foto, setfoto] = useState("")
     const [file, setFile] = useState(null);
+    //FIN DATOS DE SUCURSAL
+
     const [preview, setPreview] = useState("");
     const [errorDsc, seterrorDsc] = useState("")
     const [error, seterror] = useState(false)
@@ -42,19 +54,26 @@ export const Empresa = () => {
     const [msgSuccess, setmsgSuccess] = useState("")
     const [modificando, setmodificando] = useState(false)
     const [cambio, setcambio] = useState(false)
+    const [cambioEmpresa, setcambioEmpresa] = useState(false)
+    const [cambioSucursal, setcambioSucursal] = useState(false)
     const [mostrarMsgSinCambios, setmostrarMsgSinCambios] = useState(false)
     const [rolUsuario, setrolUsuario] = useState("")
 
     useEffect(() => {
       if(empresa){
       setid(empresa.id)
-      setnombre(empresa.nombre)
-      setdireccion(empresa.direccion)
-      settelefono(empresa.telefono)
-      setemail(empresa.email)
+      setidSucursal(sucursal.id)
+      setnombre(empresa.nombreFantasia)
+      setrazonSocial(empresa.razonSocial)
+      setnumeroRut(empresa.numeroRUT)
+      setpoliticasEmpresa(empresa.politicasEmpresa)
+      setcodigoSucursal(sucursal.codigoSucursal)
+      setdireccion(sucursal.direccion)
+      settelefono(sucursal.telefono)
+      setemail(sucursal.email)
       setfoto(empresa.foto)
       if(usuario){
-      setrolUsuario(usuario.userRol)
+        setrolUsuario(usuario.userRol)
       }
       }
     }, [empresa])
@@ -72,7 +91,7 @@ export const Empresa = () => {
         
     }
     const HandleFileChange =(event) =>{
-      setcambio(true)
+      setcambioEmpresa(true)
       const selectFile = event.target.files[0]
       if(selectFile){
         setFile(selectFile)
@@ -81,50 +100,84 @@ export const Empresa = () => {
       }
     }
     const  handleModificar  = async()=>{
-      if (cambio){
+      if (cambioEmpresa){
         setmodificando(true)
         setTimeout(() => {
           setmodificando(false);
         }, 2500);
         if(!error)
         {
-          const data = {
+          const dataEmpresa = {
             id:id,
-            nombre:nombre,
-            telefono:telefono,
-            direccion:direccion,
-            email:email,
+            nombreFantasia:nombre,
+            razonSocial:razonSocial,
+            numeroRut:numeroRut,
+            politicasEmpresa:politicasEmpresa,
             file:file
           }
-          const result =  await fetModificarEmpresa(data,dispacth)
+          console.log('llamoempresa')
+          const result =  await fetModificarEmpresa(dataEmpresa,dispacth)
           if(result){
-            setmsgSuccess("Datos de la empresa modificados correctamente")
+            setmsgSuccess("Datos modificados correctamente")
             setmodificarOk(true)
           }
           else{
             setmodificarOk(false)
-            seterrorDsc("No se pudo modificar los datos de la empresa")
+            seterrorDsc("No se pudo modificar los datos")
+          }
+        }
+        else
+        {
+          setmodificarOk(false)  
+        }
+      }
+      if(cambioSucursal){
+        setmodificando(true)
+        setTimeout(() => {
+          setmodificando(false);
+        }, 2500);
+        if(!error)
+        {
+          const dataSucursal = {
+            id:idSucursal,
+            codigoSucursal:codigoSucursal,
+            direccion:direccion,
+            telefono:telefono,
+            email:email,
+            idEmpresa:empresa.id
+          }
+          console.log('llamosucursal')
+          const resultSucursal = await fetModificarSucursal(dataSucursal,dispacth)
+          if(resultSucursal){
+            setmsgSuccess("Datos modificados correctamente")
+            setmodificarOk(true)
+          }
+          else{
+            setmodificarOk(false)
+            seterrorDsc("No se pudo modificar los datos")
           }
         }
         else
         {
           setmodificarOk(false)
-          
         }
       }
       else
       {
-        setmostrarMsgSinCambios(true)
-        setTimeout(() => {
-          setmostrarMsgSinCambios(false)
-        }, 2500);
-
+        if(!cambioEmpresa && !cambioSucursal){
+          setmostrarMsgSinCambios(true)
+          setTimeout(() => {
+            setmostrarMsgSinCambios(false)
+          }, 2500);
+        }
+        
       }
-      
+      setcambioEmpresa(false)
+      setcambioSucursal(false)
     }
 
     const onHandleChangeNombre = ({target})=>{
-      setcambio(true)
+      setcambioEmpresa(true)
       if(!target.value){
         seterror(true)
         seterrorDsc("Debe ingresar un nombre")
@@ -138,7 +191,7 @@ export const Empresa = () => {
      
     }
     const onHandleChangeTelefono =({target}) =>{
-      setcambio(true)
+      setcambioSucursal(true)
       if(!target.value){
         seterrorDsc("Debe ingresar un telefono")
         seterror(true)
@@ -151,7 +204,7 @@ export const Empresa = () => {
       }
     }
     const onHandleChangeDireccion =({target})=>{
-      setcambio(true)
+      setcambioSucursal(true)
       if(!target.value)
       {
         seterrorDsc("Debe ingresar una direccion")
@@ -165,7 +218,7 @@ export const Empresa = () => {
       }
     }
     const onHandleChangeEmail =({target})=>{
-      setcambio(true)
+      setcambioSucursal(true)
       if(!target.value)
         {
           seterrorDsc("Debe ingresar un email")
@@ -178,6 +231,51 @@ export const Empresa = () => {
           setemail(target.value)
         }
     }
+
+    const onHandleChangeRazonSocial =({target})=>{
+      setcambioEmpresa(true)
+      if(!target.value)
+        {
+          seterrorDsc("Debe ingresar una razon social")
+          seterror(true)
+          setrazonSocial(target.value)
+        }
+        else
+        {
+          seterror(false)
+          setrazonSocial(target.value)
+        }
+    }
+    const onHandleChangeRUT =({target})=>{
+      setcambioEmpresa(true)
+      if(!target.value)
+        {
+          seterrorDsc("Debe ingresar RUT")
+          seterror(true)
+          setnumeroRut(target.value)
+        }
+        else
+        {
+          seterror(false)
+          setnumeroRut(target.value)
+        }
+    }
+    const onHandleChangePoliticas =({target})=>{
+      setcambioEmpresa(true)
+      if(!target.value)
+        {
+          seterrorDsc("Debe ingresar politicas de la empresa")
+          seterror(true)
+          setpoliticasEmpresa(target.value)
+        }
+        else
+        {
+          seterror(false)
+          setpoliticasEmpresa(target.value)
+        }
+    }
+    
+
   return (
     <>
     {/* <Encabezados/> */}
@@ -204,7 +302,6 @@ export const Empresa = () => {
                 }}
                  />
           </Box>
-              
               <br/>
               <Button
                     component="label"
@@ -225,14 +322,23 @@ export const Empresa = () => {
       </Box>
       <br/>
       <Divider/>
+      <Box sx={{
+            display: 'flex', // Contenedor principal en fila
+            gap: '24px', // Espacio entre las columnas de empresa y sucursal
+            marginTop: '12px',
+              }}>
       <Box
         sx={{
           display: 'flex',
           flexDirection: 'column',
           gap: '12px', // Espacio entre los elementos
-          marginTop: '12px',
+          // marginTop: '12px',
+          flex:1,
         }}
         >
+          <Typography component="h4" variant='h5' sx={{textAlign:'left'}}>
+           Empresa
+          </Typography>
         <TextField
           label="Nombre"
           id="outlined-size-small"
@@ -243,6 +349,58 @@ export const Empresa = () => {
           margin="dense"
           disabled = {rolUsuario=="Tecnico"}
         />
+         <TextField
+          label="Razon Social"
+          id="outlined-size-small"
+          value={razonSocial}
+          size="small"
+          sx={{ maxWidth: '300px', width: '100%' }}
+          onChange={onHandleChangeRazonSocial}
+          margin="dense"
+          disabled = {rolUsuario=="Tecnico"}
+        />
+        <TextField
+          label="Numero RUT"
+          id="outlined-size-small"
+          value={numeroRut}
+          size="small"
+          sx={{ maxWidth: '300px', width: '100%' }}
+          onChange={onHandleChangeRUT}
+          margin="dense"
+          disabled = {rolUsuario=="Tecnico"}
+        />
+        <TextField
+          label="Politicas"
+          id="outlined-size-small"
+          value={politicasEmpresa}
+          size="small"
+          sx={{ maxWidth: '300px', width: '100%' }}
+          onChange={onHandleChangePoliticas}
+          margin="dense"
+          disabled = {rolUsuario=="Tecnico"}
+        />
+        </Box>
+        <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '12px', // Espacio entre los elementos
+              flex: 1, // Ocupa proporcionalmente el espacio disponible
+            }}
+          >
+          <Typography component="h3" variant='h5' sx={{textAlign:'left'}}>
+             Sucursal
+          </Typography>
+         <TextField
+          label="Codigo sucursal"
+          id="outlined-size-small"
+          value={codigoSucursal}
+          size="small"
+          sx={{ maxWidth: '300px', width: '100%' }}
+          margin="dense"
+          disabled 
+        />
+        
         <TextField
           label="Telefono"
           id="outlined-size-small"
@@ -254,6 +412,7 @@ export const Empresa = () => {
           type='number'
           disabled = {rolUsuario=="Tecnico"}
         />
+        
           <TextField
           label="Direccion"
           id="outlined-size-small"
@@ -264,6 +423,7 @@ export const Empresa = () => {
           margin="dense"
           disabled = {rolUsuario=="Tecnico"}
         />
+
         <TextField
           label="Email"
           id="outlined-size-small"
@@ -276,6 +436,10 @@ export const Empresa = () => {
           disabled = {rolUsuario=="Tecnico"}
         />
         </Box>
+        </Box>
+        <br/>
+        <Divider></Divider>
+        <br/>
         <Button  disabled = {rolUsuario=="Tecnico"} onClick={handleModificar} sx={{margin:2, p:1,margin:2,borderRadius:0}} variant="contained" size="small" color='success' startIcon={<Update/>} >
           Modificar
         </Button>
