@@ -101,7 +101,6 @@ export const NuevaReparacion = ({openValue,onClose}) => {
               fechaPromesaPresupuesto: fechaPresupuesto
             }
             const responseRep = await postReparacion(dispatch,reparacion)
-            console.log('responseRep', responseRep)
             if(!responseRep.success){
               setMsj(responseRep.message)
               setseverity("error")
@@ -120,7 +119,7 @@ export const NuevaReparacion = ({openValue,onClose}) => {
                 setOpen(false);
                 onClose();
                 resetForm()
-              }, 2000);
+              }, 1000);
             }
       }
       };

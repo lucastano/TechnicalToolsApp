@@ -20,6 +20,7 @@ import SimCardDownloadOutlinedIcon from '@mui/icons-material/SimCardDownloadOutl
 import { useNavigate } from 'react-router-dom';
 import { generarOrdSrv } from '../Fetchs';
 import { NuevaReparacion } from './NuevaReparacion';
+import { AccionesReparacion } from './AccionesReparacion';
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -191,14 +192,15 @@ export const ListadoReparaciones = () => {
                 <StyledTableCell align="center">{r.producto.marca} {r.producto.modelo}</StyledTableCell>
                 <StyledTableCell align="center">{r.numeroSerie}</StyledTableCell>
                 <StyledTableCell align="center">
-                  <Button id="basic-button" aria-controls={open ? 'basic-menu' : undefined} aria-haspopup="true" aria-expanded={open ? 'true' : undefined} onClick={handleClick}>
+                  {/* <Button id="basic-button" aria-controls={open ? 'basic-menu' : undefined} aria-haspopup="true" aria-expanded={open ? 'true' : undefined} onClick={handleClick}>
                     Acciones
                   </Button>
                   <Menu id="basic-menu" anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{ 'aria-labelledby': 'basic-button' }}>
                     <MenuItem onClick={handleClose}>Profile</MenuItem>
                     <MenuItem onClick={handleClose}>My account</MenuItem>
                     <MenuItem onClick={handleClose}>Logout</MenuItem>
-                  </Menu>
+                  </Menu> */}
+                  <AccionesReparacion estado={r.estado}/>
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   <Tooltip title="Generar Pdf">
