@@ -7,6 +7,8 @@ import { HomeEmpty } from './HomeEmpty'
 import { UserProfile } from './UserProfile'
 import { Empresa } from './Empresa'
 import { Encabezados } from './Encabezados'
+
+import { AccionesReparacion } from './AccionesReparacion'
 export const Home = () => {
 
     const [autenticacion, setAutenticacion] = useState(false)
@@ -20,14 +22,16 @@ export const Home = () => {
   <>
    {autenticacion ? (<NavBar setAutenticacion = {setAutenticacion} />) : (<Login setAutenticacionL = {setAutenticacion} />)}
    {autenticacion ? ( <Encabezados/>) : null}
-  
-   {/* <NavBar  ShowSidebar={setshow}  setAutenticacion = {setAutenticacion} /> */}
     <Routes>
         <Route path='/' element={<HomeEmpty/>}/>
         <Route path='/Reparaciones' element = {<ListadoReparaciones/>}/>
         <Route path= '/PerfilUsuario' element = {<UserProfile/>}/>
         <Route path='/Empresa' element ={<Empresa/>}/>
    </Routes>
+
+   {/* pruebas */}
+   {/* <VerDetalles/> */}
+   {/* <AccionesReparacion/> */}
   </>
   )
 }
