@@ -15,6 +15,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { selectClientes, selectEmpresa, selectProductos, selectSucursal, selectUsuario } from '../store/auth';
@@ -25,6 +30,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export const NuevaReparacion = ({openValue,onClose}) => {
     dayjs.locale('es');
+    const [clienteEncontrado, setclienteEncontrado] = useState(false)
     const [open, setOpen] = useState(false);
     const [openMsj, setopenMsj] = useState(false)
     const [descripcion, setdescripcion] = useState("")
@@ -45,8 +51,11 @@ export const NuevaReparacion = ({openValue,onClose}) => {
     const suc = useSelector(selectSucursal);
     const usu = useSelector(selectUsuario);
     const [selectedProduct, setselectedProduct] = useState(1)
+    const [radioSelected, setradioSelected] = useState("Existente")
+    const [inputsReparacion, setInputsReparacion] = useState(true)
     const dispatch = useDispatch()
 
+    
     useEffect(() => {
         setOpen(openValue)
         console.log(openValue)
@@ -62,12 +71,15 @@ export const NuevaReparacion = ({openValue,onClose}) => {
       setnumeroSerie("");
       setciCliente("");
       setMostrarInputClientes(false)
+      setradioSelected("Existente")
     }
     
     const  handleAgregar = async () => {
       let seguir = true;
-      if(mostrarInputClientes)
+      if(radioSelected != "Existente" && clienteEncontrado== false)
         {
+          console.log('encontrado???', clienteEncontrado)
+          console.log('entro a cliente nuevo y cliente no encontrado')
           const cliente = {
             nombre,
             apellido,
@@ -78,6 +90,7 @@ export const NuevaReparacion = ({openValue,onClose}) => {
           }
           const response = await postCliente(dispatch,cliente);
           if(!response.success){
+            console.log('first', response.message)
             setMsj(response.message)
             setseverity("error")
             setopenMsj(true)
@@ -88,6 +101,7 @@ export const NuevaReparacion = ({openValue,onClose}) => {
             seguir = false;
           }
       }
+     
       if(seguir){
         const reparacion =
             {
@@ -103,6 +117,7 @@ export const NuevaReparacion = ({openValue,onClose}) => {
             const responseRep = await postReparacion(dispatch,reparacion)
             if(!responseRep.success){
               setMsj(responseRep.message)
+              console.log('first', responseRep.message)
               setseverity("error")
               setopenMsj(true)
               setTimeout(() => {
@@ -125,9 +140,12 @@ export const NuevaReparacion = ({openValue,onClose}) => {
       };
     
       const handleClose = () => {
+        resetForm()
         setOpen(false);
         onClose();
       };
+
+      
 
       const onHandleChangeDsc = ({target}) =>{
         setdescripcion(target.value)
@@ -146,34 +164,65 @@ export const NuevaReparacion = ({openValue,onClose}) => {
         setciCliente(target.value);
       }
       const onBlurCiCliente =()=>{
-        const clienteBuscado = clientes.find(c=>c.ci === ciCliente);
-        if (clienteBuscado){
-            setnombre(clienteBuscado.nombre);
-            setapellido(clienteBuscado.apellido);
-            setdireccion(clienteBuscado.direccion);
-            settelefono(clienteBuscado.telefono);
-            setemail(clienteBuscado.email);
-            setopenMsj(true)
-            setMsj("Cliente encontrado")
-            setseverity("success")
-            setMostrarInputClientes(false)
-            setTimeout(() => {
-              setseverity("")
-              setopenMsj(false)
-              setMsj("")
-            }, 2000);
-        } 
-        else{
-          setopenMsj(true)
-          setMsj("Ingrese datos de cliente")
-          setseverity("info")
-          setMostrarInputClientes(true)
-          setTimeout(() => {
-            setseverity("")
-            setopenMsj(false)
-            setMsj("")
-          }, 2000);
-          
+        if(ciCliente != ""){
+          if(radioSelected == "Existente"){
+            const clienteBuscado = clientes.find(c=>c.ci === ciCliente);
+            if (clienteBuscado){
+                setclienteEncontrado(true)
+                setInputsReparacion(false)
+                setnombre(clienteBuscado.nombre);
+                setapellido(clienteBuscado.apellido);
+                setdireccion(clienteBuscado.direccion);
+                settelefono(clienteBuscado.telefono);
+                setemail(clienteBuscado.email);
+                setopenMsj(true)
+                setMsj("Cliente encontrado")
+                setseverity("success")
+                setMostrarInputClientes(false)
+                setTimeout(() => {
+                  setseverity("")
+                  setopenMsj(false)
+                  setMsj("")
+                }, 2000);
+            } 
+            else{
+              setclienteEncontrado(false)
+              setInputsReparacion(true)
+              setopenMsj(true)
+              setMsj("Cliente no encontrado")
+              setseverity("info")
+              // setMostrarInputClientes(true)
+              setTimeout(() => {
+                setseverity("")
+                setopenMsj(false)
+                // setradioSelected("Nuevo")
+                setMsj("")
+                  }, 2000);
+              
+                }
+          }else{
+            //entra si es Cliente nuevo 
+            const clienteBuscado = clientes.find(c=>c.ci === ciCliente);
+            if (clienteBuscado){
+                setclienteEncontrado(true)
+              
+                setInputsReparacion(false)
+                setnombre(clienteBuscado.nombre);
+                setapellido(clienteBuscado.apellido);
+                setdireccion(clienteBuscado.direccion);
+                settelefono(clienteBuscado.telefono);
+                setemail(clienteBuscado.email);
+                setopenMsj(true)
+                setMsj("La cedula de identidad ingresada ya se encuentra en el sistema")
+                setseverity("success")
+                setMostrarInputClientes(false)
+                setTimeout(() => {
+                  setseverity("")
+                  setopenMsj(false)
+                  setMsj("")
+                }, 2000);
+            } 
+          }
         }
       }
       const onHandleChangeNombre =({target}) =>{
@@ -193,6 +242,15 @@ export const NuevaReparacion = ({openValue,onClose}) => {
         setdireccion(target.value)
       }
 
+      const radioHandleChange = (event) =>{
+        resetForm()
+        if(event.target.value = "Nuevo"){
+          setInputsReparacion(false)
+        }
+        setradioSelected(event.target.value);
+        
+      }
+
      
   return (
     <>
@@ -208,17 +266,27 @@ export const NuevaReparacion = ({openValue,onClose}) => {
           marginTop: '12px',
         }}
         >
+          <RadioGroup
+            row
+            aria-labelledby="demo-row-radio-buttons-group-label"
+            name="row-radio-buttons-group" 
+            value={radioSelected}
+            onChange={radioHandleChange}
+          >
+            <FormControlLabel selected value="Nuevo" control={<Radio />} label="Cliente nuevo" />
+            <FormControlLabel value="Existente" control={<Radio />} label="Cliente existente" />
+          </RadioGroup>
           <TextField
           label="Cedula de cliente"
           id="outlined-size-small"
           value={ciCliente}
           size="small"
           sx={{ maxWidth: '500px', width: '100%' }}
-           onChange={onHandleChangeCiCliente}
+          onChange={onHandleChangeCiCliente}
           onBlur={onBlurCiCliente}
           margin="dense"        
         />
-        {mostrarInputClientes && (
+        {radioSelected == 'Nuevo' && (
           <>
           <TextField
           label="Nombre"
@@ -267,7 +335,9 @@ export const NuevaReparacion = ({openValue,onClose}) => {
         />
         </>
         )}
+        
           <TextField
+          disabled ={inputsReparacion}
           id="outlined-select-currency"
           select
           label="Producto"
@@ -284,6 +354,7 @@ export const NuevaReparacion = ({openValue,onClose}) => {
           ))}
         </TextField>
         <TextField
+          disabled ={inputsReparacion}
           label="Numero serie"
           id="outlined-size-small"
           value={numeroSerie}
@@ -293,6 +364,7 @@ export const NuevaReparacion = ({openValue,onClose}) => {
           margin="dense"        
         />
         <TextField
+          disabled ={inputsReparacion}
           label="Descripcion"
           id="outlined-multiline-static"
           value={descripcion}
@@ -306,6 +378,7 @@ export const NuevaReparacion = ({openValue,onClose}) => {
          <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={['DatePicker']}>
                 <DatePicker 
+                  disabled ={inputsReparacion}
                   inputFormat="YYYY-MM-DD"
                   defaultValue={dayjs()}
                   sx={{ maxWidth: '500px', width: '100%' }}
@@ -319,15 +392,13 @@ export const NuevaReparacion = ({openValue,onClose}) => {
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleAgregar} sx={{margin:2, borderRadius:1,p:1}} variant="contained" size="small" color='success' endIcon={<AddIcon/>} >Agregar</Button>
+        <Button onClick={handleAgregar} sx={{margin:2, borderRadius:1,p:1}} variant="contained" size="small" color='success' endIcon={<AddIcon/>}  disabled ={inputsReparacion} >Agregar</Button>
         <Button onClick={handleClose} sx={{p:1,margin:2,borderRadius:1}} endIcon={<KeyboardReturnSharpIcon/>} variant="contained" size="small" color="error"  >Cancelar</Button>
       </DialogActions>
     </Dialog>
     <Snackbar
         open={openMsj}
         autoHideDuration={3000}
-        
-        // action={action}
       >
         <Alert
           severity={severity}

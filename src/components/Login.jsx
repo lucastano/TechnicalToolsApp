@@ -88,6 +88,7 @@ export const Login = ({setAutenticacionL}) => {
             await getClientes(dispatch)
             await getReparaciones(dispatch,user)
             await getEmpresa(dispatch,user.idEmpresa)
+            await getSucursal(dispatch,user.idSucursal)
             await getProductos(dispatch)
           }
 

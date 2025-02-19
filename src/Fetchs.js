@@ -56,9 +56,11 @@ try{
   const response = await fetch(url,opciones);
   if(!response.ok){
     const errorData = await response.json();
+    console.log('errorData', errorData)
     throw new Error(errorData.message)
   }
   const data = await response.json();
+  console.log('data', data)
   dispatch(agregarCliente(data))
   return { success: true, data }; 
 }
@@ -231,6 +233,7 @@ async function getSucursal(dispatch,idSucursal){
     const response = await fetch(url,opciones); // Cambia esta URL según tu API
     let data = await response.json();
     if (data ) {
+      console.log('sucursal despues del fetch', data)
       dispatch(cargarSucursal(data))
     }
   } catch (error) {
