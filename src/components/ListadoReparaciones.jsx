@@ -57,32 +57,25 @@ export const ListadoReparaciones = () => {
   const [orderBy, setOrderBy] = useState('id');
   const [openNewRep,setOpenNewRep] = useState(false)
   const open = Boolean(anchorEl);
-  const navigate = useNavigate()
+
 
   useEffect(() => {
     setrolUsuario(usu.userRol)
   }, [])
-  
-
   useEffect(() => {
     const elementosFiltrados = rep.filter(r => r.estado === tab);
     setreparacionesFiltradas(elementosFiltrados)
   }, [rep])
-  
   useEffect(() => {
     const elementosFiltrados = rep.filter(r => r.estado === tab);
     setreparacionesFiltradas(elementosFiltrados)
   }, [tab])
-  
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  
-
+  // const handleClick = (event) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
+  // const handleClose = () => {
+  //   setAnchorEl(null);
+  // };
   const handleChange = (event, newValue) => {
     setTab(newValue);
   };
@@ -107,23 +100,19 @@ export const ListadoReparaciones = () => {
     if (a > b) return order === 'desc' ? -1 : 1;
     return 0;
   };
-
   const sortedData = stableSort(reparacionesFiltradas, (a, b) => comparator(a[orderBy], b[orderBy]));
-
   const  handlePrint = async(id)=>{
     const idReparacion = id
     const idEmpresa = emp.id
     const idSucursal = suc.id
     await generarOrdSrv(idReparacion,idEmpresa,idSucursal);
   }
-
   const handleNewRep =() =>{
     setOpenNewRep(true)
   }
   const handleCloseDialog = () => {
     setOpenNewRep(false); // Cierra el diálogo y actualiza el estado
   };
-
   return (
     <>
     <NuevaReparacion openValue={openNewRep} onClose={handleCloseDialog} />
@@ -192,15 +181,7 @@ export const ListadoReparaciones = () => {
                 <StyledTableCell align="center">{r.producto.marca} {r.producto.modelo}</StyledTableCell>
                 <StyledTableCell align="center">{r.numeroSerie}</StyledTableCell>
                 <StyledTableCell align="center">
-                  {/* <Button id="basic-button" aria-controls={open ? 'basic-menu' : undefined} aria-haspopup="true" aria-expanded={open ? 'true' : undefined} onClick={handleClick}>
-                    Acciones
-                  </Button>
-                  <Menu id="basic-menu" anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{ 'aria-labelledby': 'basic-button' }}>
-                    <MenuItem onClick={handleClose}>Profile</MenuItem>
-                    <MenuItem onClick={handleClose}>My account</MenuItem>
-                    <MenuItem onClick={handleClose}>Logout</MenuItem>
-                  </Menu> */}
-                  <AccionesReparacion estado={r.estado}/>
+                  <AccionesReparacion estado={r.estado} objeto={r}/>
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   <Tooltip title="Generar Pdf">
