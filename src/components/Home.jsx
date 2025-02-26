@@ -9,6 +9,8 @@ import { Empresa } from './Empresa'
 import { Encabezados } from './Encabezados'
 
 import { AccionesReparacion } from './AccionesReparacion'
+import { NuevaReparacion } from './NuevaReparacion'
+import { DashBoard } from './DashBoard'
 export const Home = () => {
 
     const [autenticacion, setAutenticacion] = useState(false)
@@ -20,18 +22,20 @@ export const Home = () => {
     
   return (
   <>
-   {autenticacion ? (<NavBar setAutenticacion = {setAutenticacion} />) : (<Login setAutenticacionL = {setAutenticacion} />)}
-   {autenticacion ? ( <Encabezados/>) : null}
-    <Routes>
+   {/* {autenticacion ? (<NavBar setAutenticacion = {setAutenticacion} />) : (<Login setAutenticacionL = {setAutenticacion} />)} */}
+   {/* {autenticacion ? ( <Encabezados/>) : null} */}
+    {/* <Routes>
         <Route path='/' element={<HomeEmpty/>}/>
         <Route path='/Reparaciones' element = {<ListadoReparaciones/>}/>
         <Route path= '/PerfilUsuario' element = {<UserProfile/>}/>
         <Route path='/Empresa' element ={<Empresa/>}/>
-   </Routes>
+   </Routes> */}
 
    {/* pruebas */}
    {/* <VerDetalles/> */}
    {/* <AccionesReparacion/> */}
+   
+   <DashBoard/>
   </>
   )
 }
