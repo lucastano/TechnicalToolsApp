@@ -28,6 +28,7 @@ const Item = styled(Paper)(({ theme }) => ({
 export const DashBoard = () => {
     const label = Tecnicos.map(t=>t.Nombre);
     const data = Tecnicos.map(t=>t.CantidadReparacionesMensuales);
+    
   return (
   
     <Paper elevation={2} sx={{ marginLeft: 2, marginRight: 2, marginTop: 2, padding: 2 }}>

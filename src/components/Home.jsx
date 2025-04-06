@@ -7,10 +7,12 @@ import { HomeEmpty } from './HomeEmpty'
 import { UserProfile } from './UserProfile'
 import { Empresa } from './Empresa'
 import { Encabezados } from './Encabezados'
-
 import { AccionesReparacion } from './AccionesReparacion'
 import { NuevaReparacion } from './NuevaReparacion'
 import { DashBoard } from './DashBoard'
+import { NewDash } from './NewDash'
+import { DashBoardGrid } from './DashBoardGrid'
+import { LoginPrueba } from './LoginPrueba'
 export const Home = () => {
 
     const [autenticacion, setAutenticacion] = useState(false)
@@ -34,8 +36,9 @@ export const Home = () => {
    {/* pruebas */}
    {/* <VerDetalles/> */}
    {/* <AccionesReparacion/> */}
-   
-   <DashBoard/>
+
+   {/* <DashBoardGrid/> */}
+      <LoginPrueba/>
   </>
   )
 }

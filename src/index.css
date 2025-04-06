@@ -1,5 +1,19 @@
-body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box; /* Opcional: asegura un mejor manejo de bordes y padding */
+@import "tailwindcss";
+
+ @layer components{
+  .cardLx{
+    @apply bg-white w-full h-40 flex flex-col items-center 
   }
+  .titleCards {
+    @apply text-2xl font-bold text-gray-600 py-2
+  }
+  .numberCards{
+    @apply text-6xl font-black text-black py-2
+  }
+  .btnCancelar {
+    @apply bg-red-600 text-white m-2  w-[100px] h-[40px] hover:bg-red-700
+  }
+  .btnAceptar {
+    @apply  bg-green-600 text-white m-2  w-[100px] h-[40px] hover:bg-green-700
+  }
+ }
