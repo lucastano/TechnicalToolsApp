@@ -139,10 +139,10 @@ export const LoginPrueba = ({setAutenticacion}) => {
                     id="email"
                     name="email"
                     type="email"
-                    required
                     autoComplete="email"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-1  focus:outline-blue-500 invalid:focus:outline-red-400 sm:text-sm/6 peer"
                     />
+                    <p className='text-red-400 text-xs hidden peer-invalid:block mt-1.5 w-full'>Formato de correo no valido.</p>
                 </div>
                 </div>
 
@@ -165,15 +165,15 @@ export const LoginPrueba = ({setAutenticacion}) => {
                         type="password"
                         required
                         autoComplete="current-password"
-                        className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                        className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6"
                         />
                     </div>
                 </div>
                 <div>
-                    <label htmlFor="select"  className="block text-sm/6 font-medium text-gray-900" >Rol</label>
+                    <label htmlFor="select"  className="block text-sm/6 font-medium text-gray-900 focus:outline-blue-500 " >Rol</label>
                     <div className="mt-2">
 
-                        <select value={rol} onChange={onChangeRol} id="select" name="select" className="mb-10 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                        <select value={rol} onChange={onChangeRol} id="select" name="select" className="mb-10 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6">
                             <option value="" disabled>Selecciona una opción</option>
                             <option value="Tecnico">Tecnico</option>
                             <option value="Administrador" >Administrador</option>
