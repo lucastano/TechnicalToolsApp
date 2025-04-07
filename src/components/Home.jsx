@@ -1,44 +1,44 @@
 import React, { useEffect, useState } from 'react'
 import { Route, Routes } from 'react-router-dom'
-import { Login } from './Login'
+import {useSelector} from 'react-redux';
 import { NavBar } from './NavBar'
 import { ListadoReparaciones } from './ListadoReparaciones'
-import { HomeEmpty } from './HomeEmpty'
 import { UserProfile } from './UserProfile'
 import { Empresa } from './Empresa'
-import { Encabezados } from './Encabezados'
-import { AccionesReparacion } from './AccionesReparacion'
-import { NuevaReparacion } from './NuevaReparacion'
-import { DashBoard } from './DashBoard'
-import { NewDash } from './NewDash'
-import { DashBoardGrid } from './DashBoardGrid'
+import { selectStatus } from '../store/auth'
 import { LoginPrueba } from './LoginPrueba'
+import { NewListadoReparaciones } from './NewListadoReparaciones';
 export const Home = () => {
-
-    const [autenticacion, setAutenticacion] = useState(false)
- 
-
-    
-
-   
-    
+  const [autenticacion, setAutenticacion] = useState(false)
+  // const statusSesion = useSelector(selectStatus)
+  const usuarioLogeado = useSelector((state)=>state.auth.status)
+  const [status, setstatus] = useState("")
+  useEffect(() => {
+    const Token = localStorage.getItem("Token")
+    if(Token ==""){
+      console.log('token es vacio')
+      setAutenticacion(false)
+    }
+    else{
+      setAutenticacion(true)
+      console.log('token no es vacio')
+    }
+  }, [])
+  
   return (
   <>
-   {/* {autenticacion ? (<NavBar setAutenticacion = {setAutenticacion} />) : (<Login setAutenticacionL = {setAutenticacion} />)} */}
-   {/* {autenticacion ? ( <Encabezados/>) : null} */}
-    {/* <Routes>
-        <Route path='/' element={<HomeEmpty/>}/>
+   { autenticacion && <NavBar setAutenticacion = {setAutenticacion} />}
+   {autenticacion == false && <LoginPrueba setAutenticacion ={setAutenticacion}/>}
+    <Routes>
         <Route path='/Reparaciones' element = {<ListadoReparaciones/>}/>
         <Route path= '/PerfilUsuario' element = {<UserProfile/>}/>
         <Route path='/Empresa' element ={<Empresa/>}/>
-   </Routes> */}
+   </Routes>
 
-   {/* pruebas */}
-   {/* <VerDetalles/> */}
-   {/* <AccionesReparacion/> */}
+   {/* <NewListadoReparaciones/> */}
 
    {/* <DashBoardGrid/> */}
-      <LoginPrueba/>
+      
   </>
   )
 }

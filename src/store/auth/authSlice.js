@@ -3,29 +3,35 @@ import { createSlice } from '@reduxjs/toolkit';
 const formatearFecha = (fechaISO) => {
       return new Date(fechaISO).toLocaleDateString("es-ES");
     };
-
-
 export const authSlice = createSlice({
      name: 'auth',
      initialState: {
-         sesion : null,
+         sesion : {
+            userName : "",
+            userLastName : "",
+            userEmail : "",
+            userRol :"",
+            userToken :"",
+            userId : "",
+            userAddres:"",
+            userCi : "",
+            userEmpresa: "",
+            userSucursal:""
+         },
          reparaciones:[],
          clientes : [],
          tecnicos : [],
          administradores:[],
-         empresa:{
-            
+         empresa:{ 
          },
          sucursal:{
-
          },
-         productos:[]
+         productos:[],
+         status : 'Unauthenticated'
       },
       reducers: {
            loginUser :(state,action) => {
-            
             const sesionUser = {
-               status : 'authenticated',
                userName : action.payload.nombre,
                userLastName : action.payload.apellido,
                userEmail : action.payload.email,
@@ -38,23 +44,17 @@ export const authSlice = createSlice({
                userSucursal:action.payload.idSucursal
             }
             state.sesion = sesionUser
-            
+            state.status = "Authenticated"
            },
-           logout :(state,payload) => {
-
-            state.sesion= null;
-            state.reparaciones = [];
-            state.clientes = [];
-            state.tecnicos = [];
-            state.administradores = []
-            state.empresa = {}
+           logout :(state,action) => {
+            console.log('entro al logout')
+            state.status = 'Unauthenticated';
            },
            cargarTecnicos:(state,action)=>{
             state.tecnicos = action.payload
            },
             cargarClientes:(state,action)=>{
                   state.clientes = action.payload
-
             },
             cargarReparaciones:(state,action)=>{
                   state.reparaciones = action.payload.map((r) => ({
@@ -79,7 +79,6 @@ export const authSlice = createSlice({
 
             },
             agregarCliente :(state,action)=>{
-                  console.log('action.payload', action.payload)
                   state.clientes = [...state.clientes,action.payload]
             }
             ,
@@ -96,7 +95,6 @@ export const authSlice = createSlice({
             },
             modificarSucursal : (state,action)=>{
                   state.sucursal=action.payload
-
             }
    }
 });
@@ -109,3 +107,4 @@ export const selectReparaciones =(state)=>state.auth.reparaciones;
 export const selectEmpresa = (state) => state.auth.empresa;
 export const selectProductos =(state) => state.auth.productos;
 export const selectSucursal =(state) => state.auth.sucursal;
+export const selectStatus = (state) =>state.auth.status;

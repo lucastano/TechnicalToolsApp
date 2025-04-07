@@ -70,12 +70,7 @@ export const ListadoReparaciones = () => {
     const elementosFiltrados = rep.filter(r => r.estado === tab);
     setreparacionesFiltradas(elementosFiltrados)
   }, [tab])
-  // const handleClick = (event) => {
-  //   setAnchorEl(event.currentTarget);
-  // };
-  // const handleClose = () => {
-  //   setAnchorEl(null);
-  // };
+
   const handleChange = (event, newValue) => {
     setTab(newValue);
   };
@@ -115,88 +110,47 @@ export const ListadoReparaciones = () => {
   };
   return (
     <>
-    <NuevaReparacion openValue={openNewRep} onClose={handleCloseDialog} />
-     <Paper elevation={2} sx={{ marginLeft: 10, marginRight: 10, marginTop: 2, padding: 2 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: 2 }}>
-        <Tabs value={tab || 'EnTaller'} onChange={handleChange} textColor="primary" indicatorColor="primary" aria-label="secondary tabs example">
-          <Tab  value="EnTaller" label="En taller" />
-          <Tab value="Presupuestada" label="Presupuestadas" />
-          <Tab value="Reparada" label="Reparadas" />
-          <Tab value="Entregada" label="Entregadas" />
-        </Tabs>
-        <Button disabled = {rolUsuario=="Administrador"} onClick={handleNewRep} size="small" sx={{ p: 1, margin: 2, borderRadius: 1 }} endIcon={<AddCircleIcon />} variant="contained" color="success">
-          Nueva
-        </Button>
-      </Box>
-      <TableContainer component={Paper}>
-        <Table size="small" sx={{ minWidth: 700 }} aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              {/* Columna Orden */}
-              <StyledTableCell  align="center">
-                <TableSortLabel
-                  active={orderBy === 'id'}
-                  direction={orderBy === 'id' ? order : 'asc'}
-                  onClick={() => handleRequestSort('id')}
-                >
-                  Orden
-                </TableSortLabel>
-              </StyledTableCell >
+      <div className='Grid grid-cols-1 bg-gray-50 h-auto my-[20px] mx-[20px] gap-8 py-3 px-2'>
+        {/* tabla de filtros */}
+        <div className='col-span-1  my-[20px] m-[20px] flex justify-end'>
+         <button className='btnAgregar'>Nueva</button>
+        </div>
+        <div className='col-span-1 bg-blue-900  my-[20px] m-[20px]'>
+          FILTROS
+        </div>
+        <div className='col-span-1  my-[20px] m-[20px]'>
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead>
+                <tr className='bg-blue-950 text-white h-9'>
+                  <th>Orden</th>
+                  <th>Fecha de ingreso</th>
+                  <th>Cliente</th>
+                  <th>Aparato</th>
+                  <th>Serie</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  rep.map((r,i) =>(
+                    <tr key={i} className='even:bg-gray-200 hover:bg-gray-100 transition h-9'>
+                      <td className='text-center'>{r.id}</td> 
+                      <td className='text-center'>{r.fecha}</td>
+                      <td className='text-center'>{r.clienteNombre}</td>
+                      <td className='text-center'>{r.producto.marca}</td>
+                      <td className='text-center'>{r.numeroSerie}</td>
+                      <td className='text-center'>ACCIONES</td>
+                  </tr>
+                  ))}
+                
+              </tbody>
+              </table>
+        </div>
+        <div className='col-span-1 bg-blue-950  my-[20px] m-[20px]'>
+          paginado
+        </div>
 
-              {/* Columna Fecha de ingreso */}
-              <StyledTableCell align="center">
-                <TableSortLabel
-                  active={orderBy === 'fecha'}
-                  direction={orderBy === 'fecha' ? order : 'asc'}
-                  onClick={() => handleRequestSort('fecha')}
-                >
-                  Fecha de ingreso
-                </TableSortLabel>
-              </StyledTableCell>
-
-              {/* Columna Cliente */}
-              <StyledTableCell align="center">
-                <TableSortLabel
-                  active={orderBy === 'clienteNombre'}
-                  direction={orderBy === 'clienteNombre' ? order : 'asc'}
-                  onClick={() => handleRequestSort('clienteNombre')}
-                >
-                  Cliente
-                </TableSortLabel>
-              </StyledTableCell>
-
-              {/* Columnas no ordenables */}
-              <StyledTableCell align="center">Aparato</StyledTableCell>
-              <StyledTableCell align="center">Serie</StyledTableCell>
-              <StyledTableCell align="center"></StyledTableCell>
-              <StyledTableCell align="center"></StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {sortedData.map((r) => (
-              <StyledTableRow   key={r.id}>
-                <StyledTableCell align="center">{r.id}</StyledTableCell>
-                <StyledTableCell align="center">{r.fecha}</StyledTableCell>
-                <StyledTableCell align="center">{r.clienteNombre} {r.clienteApellido}</StyledTableCell>
-                <StyledTableCell align="center">{r.producto.marca} {r.producto.modelo}</StyledTableCell>
-                <StyledTableCell align="center">{r.numeroSerie}</StyledTableCell>
-                <StyledTableCell align="center">
-                  <AccionesReparacion estado={r.estado} objeto={r}/>
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  <Tooltip title="Generar Pdf">
-                    <SimCardDownloadOutlinedIcon
-                      sx={{ cursor: 'pointer' }}
-                      onClick={() => handlePrint(r.id)}
-                    />
-                  </Tooltip>
-                </StyledTableCell>
-              </StyledTableRow >
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Paper>
+      </div>
     </>
   )
 }

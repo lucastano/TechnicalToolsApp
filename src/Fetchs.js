@@ -1,7 +1,7 @@
 import { cargarTecnicos, cargarClientes, cargarAdministradores, cargarReparaciones, cargarEmpresa,modificarEmpresa, cargarProductos, cargarSucursal, modificarSucursal, agregarReparacion, agregarCliente } from "./store/auth";
 
 // const urlBase = 'https://proyectoserviceapirest20240901142836.azurewebsites.net/api/'
-const urlBase ='https://10.211.55.3:7105'
+const urlBase ='https://localhost:7105'
 async function login(user, password, rol) {
   const url = urlBase + '/api/Seguridad'
   const userLogin = {
