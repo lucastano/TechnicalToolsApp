@@ -29,7 +29,7 @@ export const NavBar = ({setAutenticacion}) => {
     localStorage.setItem("Token","")
     dispatch(logout())
     setAutenticacion(false)
-    // navigate("/")
+     navigate("/")
   }
   return (
     <nav class="bg-blue-950">
