@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import CircularProgress from '@mui/material/CircularProgress';
-import {login,getClientes,getTecnicos,getReparaciones,getEmpresa,getSucursal,getProductos} from '../Fetchs'
+import {login,loginprueba,getClientes,getTecnicos,getReparaciones,getEmpresa,getSucursal,getProductos} from '../Fetchs'
 import { useDispatch,useSelector} from 'react-redux';
 import { loginUser } from '../store/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
@@ -46,8 +46,7 @@ export const LoginPrueba = ({setAutenticacion}) => {
                 await getProductos(dispatch)
             }
             setAutenticacion(true)
-            IniciarSistema()
-            
+            IniciarSistema()  
         }
     }
     const IniciarSistema =()=>{
@@ -62,7 +61,9 @@ export const LoginPrueba = ({setAutenticacion}) => {
             setloading(true)
             try
             {
-                response = await login(user,pass,rol)
+                 response = await login(user,pass,rol)
+                // response = await loginprueba()
+                console.log('response', response)
                 console.log('response.statuscode', response.statusCode)
                 if (response.statusCode == 200)
                 {

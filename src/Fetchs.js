@@ -1,15 +1,16 @@
 import { cargarTecnicos, cargarClientes, cargarAdministradores, cargarReparaciones, cargarEmpresa,modificarEmpresa, cargarProductos, cargarSucursal, modificarSucursal, agregarReparacion, agregarCliente } from "./store/auth";
 
 // const urlBase = 'https://proyectoserviceapirest20240901142836.azurewebsites.net/api/'
-const urlBase ='https://lucast-001-site1.ptempurl.com'
+const urlBase ='http://lucast-001-site1.ptempurl.com'
 async function login(user, password, rol) {
   const url = urlBase + '/api/seguridad'
   const userLogin = {
-    Email: user,
-    Password: password,
-    Rol: rol
+    email: user,
+    password: password,
+    rol: rol
   }
   const data = JSON.stringify(userLogin);
+  console.log('data', data)
   const opciones = {
     method: "POST",
     headers: {
@@ -22,7 +23,7 @@ async function login(user, password, rol) {
     const respuesta = await fetch(url, opciones);
     if (!respuesta.ok) {
       const datos = await respuesta.json();
-      console.log(datos)
+      console.log("aca salat el error",datos)
       throw new Error(datos.error);
     } else {
       const datos = await respuesta.json();
@@ -160,7 +161,8 @@ async function getReparaciones(dispatch,user) {
       const datos = await respuesta.json();
       const reparaciones = datos.reparaciones;
       if(user.rol==="Tecnico"){
-        const reparacionesFiltradas = reparaciones.filter(r=>r.tecnicoId===user.id);
+        const reparacionesFiltradas = reparaciones.filter(r=>r.id > 0);
+        // const reparacionesFiltradas = reparaciones.filter(r=>r.tecnicoId===user.id);
         dispatch(cargarReparaciones(reparacionesFiltradas));
       }else{
         dispatch(cargarReparaciones(reparaciones));
@@ -383,6 +385,7 @@ async function getProductos(dispatch){
 }
 async function postReparacion(dispatch,data){
   console.log('data', data)
+  console.log('data', data)
   const url = urlBase + `/api/Reparaciones`
   const token = localStorage.getItem("Token");
   const opciones = {
@@ -406,6 +409,44 @@ async function postReparacion(dispatch,data){
    return  { success: false, message: error.message }
   }
 }
+
+async function loginprueba() {
+  const userLogin = {
+    email: "lucasgabriel.tano@gmail.com",
+    password: "Lu3472759",
+    rol: "Administrador"
+  }
+  const url = urlBase + '/api/seguridad'
+  const data = JSON.stringify(userLogin);
+  console.log('data', data)
+  const opciones = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      accept: "application/json",
+    },
+    body: data,
+  };
+  try {
+    const respuesta = await fetch(url, opciones);
+    if (!respuesta.ok) {
+      const datos = await respuesta.json();
+      console.log("aca salat el error",datos)
+      throw new Error(datos.error);
+    } else {
+      const datos = await respuesta.json();
+      if (datos.token) {
+        localStorage.setItem("Token", datos.token);
+      } else {
+        throw new Error("No se recibio token");
+      }
+      return datos;
+    }
+  } catch (error) {
+     throw error.message;
+  }
+  
+}
 export {
   login,
   getClientes,
@@ -420,5 +461,6 @@ export {
   getSucursal,
   fetModificarSucursal,
   postReparacion,
-  postCliente
+  postCliente,
+  loginprueba
 }

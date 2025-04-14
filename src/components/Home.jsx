@@ -7,7 +7,7 @@ import { UserProfile } from './UserProfile'
 import { Empresa } from './Empresa'
 import { selectStatus } from '../store/auth'
 import { LoginPrueba } from './LoginPrueba'
-import { NewListadoReparaciones } from './NewListadoReparaciones';
+import { NuevaReparacion } from './NuevaReparacion';
 export const Home = () => {
   const [autenticacion, setAutenticacion] = useState(false)
   // const statusSesion = useSelector(selectStatus)
@@ -33,6 +33,7 @@ export const Home = () => {
         <Route path='/Reparaciones' element = {<ListadoReparaciones/>}/>
         <Route path= '/PerfilUsuario' element = {<UserProfile/>}/>
         <Route path='/Empresa' element ={<Empresa/>}/>
+        <Route path='/NuevaReparacion' element={<NuevaReparacion/>}/>
    </Routes>
 
    {/* <NewListadoReparaciones/> */}

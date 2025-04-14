@@ -1,119 +1,31 @@
 import React, { useEffect, useState } from 'react'
-import { styled } from '@mui/material/styles';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
 import { selectEmpresa, selectReparaciones, selectSucursal, selectUsuario } from '../store/auth';
 import { useSelector } from 'react-redux';
-import {  MenuItem, TableSortLabel, Tooltip } from '@mui/material';
-import Button from '@mui/material/Button';
-import Menu from '@mui/material/Menu';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import SimCardDownloadOutlinedIcon from '@mui/icons-material/SimCardDownloadOutlined';
 import { useNavigate } from 'react-router-dom';
 import { generarOrdSrv } from '../Fetchs';
 import { NuevaReparacion } from './NuevaReparacion';
 import { AccionesReparacion } from './AccionesReparacion';
 
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.common.white,
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-  },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(odd)': {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  '&:last-child td, &:last-child th': {
-    border: 0,
-  },
-}));
-
 export const ListadoReparaciones = () => {
  
   const rep = useSelector(selectReparaciones);
   const emp = useSelector(selectEmpresa);
   const suc = useSelector(selectSucursal);
-  const usu = useSelector(selectUsuario);
-  const [tab, setTab] =  useState("EnTaller")
-  const [reparacionesFiltradas, setreparacionesFiltradas] = useState([])
   const [rolUsuario, setrolUsuario] = useState("")
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('id');
-  const [openNewRep,setOpenNewRep] = useState(false)
-  const open = Boolean(anchorEl);
-
-
+  const usu = useSelector(selectUsuario);
+  const navigate = useNavigate();
+  
   useEffect(() => {
     setrolUsuario(usu.userRol)
   }, [])
-  useEffect(() => {
-    const elementosFiltrados = rep.filter(r => r.estado === tab);
-    setreparacionesFiltradas(elementosFiltrados)
-  }, [rep])
-  useEffect(() => {
-    const elementosFiltrados = rep.filter(r => r.estado === tab);
-    setreparacionesFiltradas(elementosFiltrados)
-  }, [tab])
 
-  const handleChange = (event, newValue) => {
-    setTab(newValue);
-  };
-
-  const handleRequestSort = (property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
-  const stableSort = (array, comparator) => {
-    const stabilizedArray = array.map((el, index) => [el, index]);
-    stabilizedArray.sort((a, b) => {
-      const order = comparator(a[0], b[0]);
-      if (order !== 0) return order;
-      return a[1] - b[1];
-    });
-    return stabilizedArray.map((el) => el[0]);
-  };
-
-  const comparator = (a, b) => {
-    if (a < b) return order === 'desc' ? 1 : -1;
-    if (a > b) return order === 'desc' ? -1 : 1;
-    return 0;
-  };
-  const sortedData = stableSort(reparacionesFiltradas, (a, b) => comparator(a[orderBy], b[orderBy]));
-  const  handlePrint = async(id)=>{
-    const idReparacion = id
-    const idEmpresa = emp.id
-    const idSucursal = suc.id
-    await generarOrdSrv(idReparacion,idEmpresa,idSucursal);
-  }
-  const handleNewRep =() =>{
-    setOpenNewRep(true)
-  }
-  const handleCloseDialog = () => {
-    setOpenNewRep(false); // Cierra el diálogo y actualiza el estado
-  };
   return (
     <>
       <div className='Grid grid-cols-1 bg-gray-50 h-auto my-[20px] mx-[20px] gap-8 py-3 px-2'>
         {/* tabla de filtros */}
         <div className='col-span-1  my-[20px] m-[20px] flex justify-end'>
-         <button className='btnAgregar'>Nueva</button>
+         <button onClick={()=>navigate('/NuevaReparacion')} className='btnAgregar cursor-pointer'>Nueva</button>
         </div>
         <div className='col-span-1 bg-blue-900  my-[20px] m-[20px]'>
           FILTROS
@@ -121,8 +33,8 @@ export const ListadoReparaciones = () => {
         <div className='col-span-1  my-[20px] m-[20px]'>
             <table className="min-w-full divide-y divide-gray-200">
               <thead>
-                <tr className='bg-blue-950 text-white h-9'>
-                  <th>Orden</th>
+                <tr className='bg-blue-950 text-white h-7'>
+                  <th>Nro. Orden</th>
                   <th>Fecha de ingreso</th>
                   <th>Cliente</th>
                   <th>Aparato</th>
@@ -133,10 +45,10 @@ export const ListadoReparaciones = () => {
               <tbody>
                 {
                   rep.map((r,i) =>(
-                    <tr key={i} className='even:bg-gray-200 hover:bg-gray-100 transition h-9'>
+                    <tr key={i} className='even:bg-gray-200 hover:bg-gray-100 transition h-7'>
                       <td className='text-center'>{r.id}</td> 
                       <td className='text-center'>{r.fecha}</td>
-                      <td className='text-center'>{r.clienteNombre}</td>
+                      <td className='text-center'>{r.clienteNombre + " "+r.clienteApellido}</td>
                       <td className='text-center'>{r.producto.marca}</td>
                       <td className='text-center'>{r.numeroSerie}</td>
                       <td className='text-center'>ACCIONES</td>
@@ -146,11 +58,42 @@ export const ListadoReparaciones = () => {
               </tbody>
               </table>
         </div>
-        <div className='col-span-1 bg-blue-950  my-[20px] m-[20px]'>
-          paginado
+        <div className='flex items-center justify-between col-span-1 my-[20px] m-[20px]'>
+          {/* desde aca  empieza el paginado , por ahora no funciona */}
+          <div class="flex flex-1 justify-between sm:hidden">
+            <a href="#" class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Previous</a>
+            <a href="#" class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Next</a>
+          </div>
+          <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+            <div>
+              {/* div sin conenido */}
+            </div>
+            <div>
+              <nav class="isolate inline-flex -space-x-px rounded-md shadow-xs" aria-label="Pagination">
+                <a href="#" class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                  <span class="sr-only">Previous</span>
+                  <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+                    <path fill-rule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+                  </svg>
+                </a>
+                <a href="#" aria-current="page" class="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">1</a>
+                <a href="#" class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-20 focus:outline-offset-0">2</a>
+                <a href="#" class="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex">3</a>
+                <span class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-gray-300 ring-inset focus:outline-offset-0">...</span>
+                <a href="#" class="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex">8</a>
+                <a href="#" class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-20 focus:outline-offset-0">9</a>
+                <a href="#" class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-20 focus:outline-offset-0">10</a>
+                <a href="#" class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                  <span class="sr-only">Next</span>
+                  <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+                    <path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                  </svg>
+                </a>
+              </nav>
+            </div>
+          </div>
+          </div>
         </div>
-
-      </div>
     </>
   )
 }
