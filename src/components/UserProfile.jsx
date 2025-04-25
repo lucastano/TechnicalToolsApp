@@ -2,7 +2,6 @@ import { Box, Button, Divider, FormControl, InputLabel, Paper, TextField, Typogr
 import React, { useEffect, useState } from 'react'
 import { Encabezados } from './Encabezados'
 import { useSelector } from 'react-redux'
-import { selectUsuario } from '../store/auth'
 import { Container } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { Update } from '@mui/icons-material'

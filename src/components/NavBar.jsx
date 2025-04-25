@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import {useDispatch} from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../store/auth/authSlice';
+import { useAuth } from '../context/AuthContext';
 const navigation = [
-  { name: 'Reparaciones', href: '#', current: true },
-  { name: 'Tecnicos', href: '#', current: false },
-  { name: 'Clientes', href: '#', current: false },
-  { name: 'Metricas', href: '#', current: false },
+  { name: 'Reparaciones',Direccion:'Reparaciones', current: true },
+  { name: 'Perfil Usuario', Direccion: 'PerfilUsuario', current: false },
+  { name: 'Empresa', Direccion: 'Empresa', current: false },
+  { name: 'Nueva Reparacion', Direccion: 'NuevaReparacion', current: false },
 ]
 
 function classNames(...classes) {
@@ -14,8 +13,8 @@ function classNames(...classes) {
 }
 export const NavBar = ({setAutenticacion}) => {
   const [menuUser, setmenuUser] = useState(false)
-  const dispatch = useDispatch()
   const navigate = useNavigate();
+  const {logout} = useAuth()
 
   const onChangeMenuUser = ()=>{
     if (menuUser){
@@ -26,10 +25,9 @@ export const NavBar = ({setAutenticacion}) => {
     }
   }
   const onClicklogOut =()=>{
-    localStorage.setItem("Token","")
-    dispatch(logout())
-    setAutenticacion(false)
-     navigate("/")
+    logout()
+    localStorage.removeItem('Token');
+     navigate("/Login")
   }
   return (
     <nav class="bg-blue-950">
@@ -55,7 +53,7 @@ export const NavBar = ({setAutenticacion}) => {
           <div class="flex space-x-4">
           {
             navigation.map(x =>
-              <a href={x.name} class=" px-3 py-2 text-sm font-medium text-gray-300  hover:bg-gray-700  hover:text-white" aria-current="page">{x.name}</a>
+              <a onClick={()=>navigate("/"+x.Direccion+"")}  key={x.name} class=" px-3 py-2 text-sm font-medium text-gray-300  hover:bg-gray-700  hover:text-white" aria-current="page">{x.name}</a>
             )
           }
           </div>

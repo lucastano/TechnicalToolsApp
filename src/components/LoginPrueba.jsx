@@ -1,99 +1,49 @@
 import React, { useEffect, useState } from 'react'
 import CircularProgress from '@mui/material/CircularProgress';
-import {login,loginprueba,getClientes,getTecnicos,getReparaciones,getEmpresa,getSucursal,getProductos} from '../Fetchs'
-import { useDispatch,useSelector} from 'react-redux';
-import { loginUser } from '../store/auth/authSlice';
+import {loginFetch,loginprueba,getClientes,getTecnicos,getReparaciones,getEmpresa,getSucursal,getProductos} from '../Fetchs'
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export const LoginPrueba = ({setAutenticacion}) => {
     const navigate = useNavigate();
-    const usuarioLogeado = useSelector((state)=>state.auth)
-    const dispatch = useDispatch()
     const [user, setuser] = useState("")
     const [pass, setpass] = useState("")
     const [rol, setrol] = useState("")
     const [loading, setloading] = useState(false)
     const [userLoged, setuserLoged] = useState({})
     const [errorLoginDsc, seterrorLoginDsc] = useState("")
+     const {isAuthenticated,login} = useAuth()
     useEffect(() => {
-     const Token = localStorage.getItem("Token")
-        console.log('Token', Token)
-    }, [])
-
-    useEffect(() => {
-      dispatch(loginUser(userLoged))
-      setearEstado()
-    }, [userLoged])
-
-    const setearEstado =async () => {
-        const rol = userLoged.rol
-        if(rol == 'Administrador' || rol == 'Tecnico' )
-        {
-            if(rol == 'Administrador'){
-                await getClientes(dispatch)
-                await getTecnicos(dispatch)
-                await getReparaciones(dispatch,userLoged)
-                await getEmpresa(dispatch,userLoged.idEmpresa)
-                await getSucursal(dispatch,userLoged.idSucursal)
-                await getProductos(dispatch)
-            }
-            else
-            {
-                await getClientes(dispatch)
-                await getReparaciones(dispatch,userLoged)
-                await getEmpresa(dispatch,userLoged.idEmpresa)
-                await getSucursal(dispatch,userLoged.idSucursal)
-                await getProductos(dispatch)
-            }
-            setAutenticacion(true)
-            IniciarSistema()  
+        if (isAuthenticated) {
+            console.log('entra a isAuthenticated')
+            navigate("/Reparaciones",{replace:true})
         }
-    }
-    const IniciarSistema =()=>{
-        console.log('iniciarSsistema')
-        navigate("/Reparaciones")
-    }
+     
+    }, [isAuthenticated])
     const onHandleLogin = async (event)=>{
         event.preventDefault()
-        let seguir = false
         let response = null
         if(user != "" && pass != "" && rol!=""){
             setloading(true)
             try
             {
-                 response = await login(user,pass,rol)
-                // response = await loginprueba()
+                response = await loginFetch(user,pass,rol)
                 console.log('response', response)
                 console.log('response.statuscode', response.statusCode)
                 if (response.statusCode == 200)
-                {
-                    seguir = true;
-                }   
+                { 
+                    console.log('Token', response.token)
+                    localStorage.setItem("UsuarioLog",JSON.stringify(response.usuario))
+                    login(response.token)
+                    navigate("/Reparaciones")
+                }else{
+                    seterrorLoginDsc("Error en el login")
+                }
             }
             catch(error){
                 seterrorLoginDsc(error)
             }
-            if (seguir)
-            {   
-                const userObject ={
-                    id:response.usuario.id,
-                    nombre:response.usuario.nombre,
-                    apellido:response.usuario.apellido,
-                    rol:response.usuario.rol,
-                    email:response.usuario.email,
-                    ci:response.usuario.ci,
-                    direccion:response.usuario.direccion,
-                    telefono:response.usuario.telefono,
-                    token:response.token,
-                    idEmpresa:response.usuario.idEmpresa,
-                    idSucursal:response.usuario.idSucursal
-                }
-                setuserLoged(userObject)
-            }
-            else{
-                console.log('Hubo algun error',errorLoginDsc)
-                setloading(false)
-            }
+            
         }
     }
 
@@ -106,7 +56,6 @@ export const LoginPrueba = ({setAutenticacion}) => {
     }
     const onChangeRol =(event)=>{
         setrol(event.target.value)
-        console.log('event.target.value', event.target.value)
     }
   return (
     <div className='grid grid-cols-1  md:grid-cols-3 md:m-20'>

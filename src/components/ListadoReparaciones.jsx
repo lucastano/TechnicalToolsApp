@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { selectEmpresa, selectReparaciones, selectSucursal, selectUsuario } from '../store/auth';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { generarOrdSrv } from '../Fetchs';
@@ -9,15 +8,17 @@ import { AccionesReparacion } from './AccionesReparacion';
 
 export const ListadoReparaciones = () => {
  
-  const rep = useSelector(selectReparaciones);
-  const emp = useSelector(selectEmpresa);
-  const suc = useSelector(selectSucursal);
+  
   const [rolUsuario, setrolUsuario] = useState("")
-  const usu = useSelector(selectUsuario);
   const navigate = useNavigate();
   
   useEffect(() => {
-    setrolUsuario(usu.userRol)
+    const Token = localStorage.getItem("Token")
+    if(Token ==""){
+
+    }
+    else{
+    }
   }, [])
 
   return (
@@ -43,7 +44,7 @@ export const ListadoReparaciones = () => {
                 </tr>
               </thead>
               <tbody>
-                {
+                {/* {
                   rep.map((r,i) =>(
                     <tr key={i} className='even:bg-gray-200 hover:bg-gray-100 transition h-7'>
                       <td className='text-center'>{r.id}</td> 
@@ -53,7 +54,7 @@ export const ListadoReparaciones = () => {
                       <td className='text-center'>{r.numeroSerie}</td>
                       <td className='text-center'>ACCIONES</td>
                   </tr>
-                  ))}
+                  ))} */}
                 
               </tbody>
               </table>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Encabezados } from './Encabezados'
 import { Box, Button, Card, CardActionArea, CardContent, CardMedia, Container, Divider, Paper, TextField, Typography } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux';
-import { selectEmpresa, selectSucursal, selectUsuario } from '../store/auth';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
 import { BoxImagen } from './BoxImagen';

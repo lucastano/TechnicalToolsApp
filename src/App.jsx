@@ -1,23 +1,29 @@
 
-import './App.css'
-
-import { Login } from './components/Login'
 import { Route, Routes } from 'react-router-dom';
+import './App.css'
+import { LoginPrueba } from './components/LoginPrueba';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { Layout } from './components/Layout';
 import { ListadoReparaciones } from './components/ListadoReparaciones';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import { Home } from './components/Home';
+import { UserProfile } from './components/UserProfile';
+import { Empresa } from './components/Empresa';
+import { NuevaReparacion } from './components/NuevaReparacion';
 function App() {
-// const [autenticacion, setAutenticacion] = useState(false)
-// console.log(autenticacion)
   return (
     <>
-    {/* {autenticacion && <NavBar/>}
-    <Routes>
-        <Route path='/' element = {<Login setAutenticacionL = {setAutenticacion} />}/>
-        <Route path='/Servicios' element={<ListadoReparaciones/>}/>
-   </Routes> */}
-   <Home/>
+      <Routes>
+        {/* ruta publica */}
+        <Route path='/Login' element={<LoginPrueba/>}/>
+        {/* rutas protegidas  */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<Layout />}>
+            <Route path='/Reparaciones' element={<ListadoReparaciones />} />
+            <Route path='/PerfilUsuario' element={<UserProfile />} />
+            <Route path='/Empresa' element={<Empresa />} />
+            <Route path='/NuevaReparacion' element={<NuevaReparacion />} />
+          </Route>
+        </Route>
+      </Routes>
     </>
   )
 }

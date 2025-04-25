@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { selectClientes, selectEmpresa, selectProductos, selectSucursal, selectUsuario } from '../store/auth';
 import { postReparacion ,postCliente} from '../Fetchs';
 import { useNavigate } from 'react-router-dom';
 

@@ -1,0 +1,3 @@
+const agregarLocalStorage = (clave, valor) => {
+    
+}
