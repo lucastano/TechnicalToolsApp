@@ -1,68 +1,92 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { generarOrdSrv, getReparaciones } from '../Fetchs';
-import { NuevaReparacion } from './NuevaReparacion';
-import { AccionesReparacion } from './AccionesReparacion';
+
 
 
 export const ListadoReparaciones = () => {
-const [reparaciones, setreparaciones] = useState([])
-const [user, setuser] = useState({})
-const navigate = useNavigate();
-const itemPerPage = 15;
-const [currentPage, setcurrentPage] = useState(1)
-const [totalPage, settotalPage] = useState(0)
+  //UNA LISTA POR CADA ESTADO
+  const [reparacionesEnTaller, setReparacionesEnTaller] = useState([])
+  const [reparacionesPresupuestadas, setReparacionesPresupuestadas] = useState([])
+  const [reparacionesAceptadas, setReparacionesAceptadas] = useState([])
+  const [reparacionesTerminadas, setReparacionesTerminadas] = useState([])
+  const [reparacionesEntregadas, setReparacionesEntregadas] = useState([])
+
+  const [reparaciones, setreparaciones] = useState([])
+  const [user, setuser] = useState({})
+  const [tabSelected, settabSelected] = useState("EnTaller")
+  const navigate = useNavigate();
+  const itemPerPage = 12;
+  const [currentPage, setcurrentPage] = useState(1)
+  const [totalPage, settotalPage] = useState(0)
+    
+    useEffect(() => {
+      cargarReparaciones()
+      settabSelected("EnTaller")
+    }, [])
+    
+    const indexOfLastItem = currentPage * itemPerPage;
+     const indexOfFirstItem = indexOfLastItem - itemPerPage;
+     let currentItems = reparaciones.slice(indexOfFirstItem, indexOfLastItem);
+     const currentItemsTab = currentItems.filter((r) => r.estado === tabSelected);
+     currentItems = currentItemsTab;
+    
+    const cargarReparaciones = async () => 
+    {
+      const usuarioLog = JSON.parse(localStorage.getItem('UsuarioLog'))
+      setuser(usuarioLog)
+      const reparacionesResponse = await getReparaciones(usuarioLog)
+      const totalPagesCount = Math.ceil(reparacionesResponse.length / itemPerPage);
+      settotalPage(totalPagesCount);
+      setreparaciones(reparacionesResponse);
+    }
   
-  useEffect(() => {
-    cargarReparaciones()
-  }, [])
-   const indexOfLastItem = currentPage * itemPerPage;
-   const indexOfFirstItem = indexOfLastItem - itemPerPage;
-   const currentItems = reparaciones.slice(indexOfFirstItem, indexOfLastItem);
-
-  const cargarReparaciones = async () => 
-  {
-    const usuarioLog = JSON.parse(localStorage.getItem('UsuarioLog'))
-    setuser(usuarioLog)
-    const reparacionesResponse = await getReparaciones(usuarioLog)
-    const totalPagesCount = Math.ceil(reparacionesResponse.length / itemPerPage);
-    settotalPage(totalPagesCount);
-    setreparaciones(reparacionesResponse);
-  }
-
-  const nextPage = ()=>{
-    let page = currentPage
-    page++;
-    if(page<=totalPage){
-      setcurrentPage(page)
+    const nextPage = ()=>{
+      let page = currentPage
+      page++;
+      if(page<=totalPage){
+        setcurrentPage(page)
+      }
     }
-  }
-  const previousPage = ()=>{
-    console.log('next')
-    let page = currentPage
-    page--;
-    if(page >=1){
-      setcurrentPage(page)
+    const previousPage = ()=>{
+      console.log('next')
+      let page = currentPage
+      page--;
+      if(page >=1){
+        setcurrentPage(page)
+      }
     }
-  }
-  const toLast = ()=>{
-    setcurrentPage(totalPage)
-  }
-  const toFirst =()=>{
-    setcurrentPage(1)
-  }
+    const toLast = ()=>{
+      setcurrentPage(totalPage)
+    }
+    const toFirst =()=>{
+      setcurrentPage(1)
+    }
+    const selectTab = (tab) => {
+      setcurrentPage(1)
+      settabSelected(tab)
+    }
+  
+  
+  
   return (
     <>
-      <div className='Grid grid-cols-1 bg-gray-50 h-auto my-[20px] mx-[20px] gap-8 py-3 px-2'>
-        <div className='col-span-1  my-[20px] m-[20px] flex justify-end'>
-         <button onClick={()=>navigate('/NuevaReparacion')} className='btnAgregar cursor-pointer'>Nueva</button>
+      <div className='grid grid-cols-1 bg-gray-50 h-auto my-[20px] mx-[20px] gap-8 py-3 px-2'>
+        <div className='col-span-1  my-[10px] m-[10px] flex justify-between'>
+          <div className='flex gap-3 items-center justify-center p-2  '>
+            <div onClick={()=>selectTab("EnTaller")}  className={`${tabSelected === "EnTaller" ? "border-blue-950" : "border-blue-800"} cursor-pointer border-b-4 border-blue-800  hover:border-blue-950  p-2`} >En taller</div>
+            <div onClick={()=>selectTab("Presupuestada")} className={`${tabSelected === "Presupuestada" ? "border-blue-950" : "border-blue-800"} cursor-pointer border-b-4 border-blue-800  hover:border-blue-950  p-2`} >Presupuestadas</div>
+            <div onClick={()=>selectTab("Aceptada")} className={`${tabSelected === "Aceptada" ? "border-blue-950" : "border-blue-800"} cursor-pointer border-b-4 border-blue-800  hover:border-blue-950  p-2`} >Aceptadas</div>
+            <div onClick={()=>selectTab("Terminada")} className={`${tabSelected === "Terminada" ? "border-blue-950" : "border-blue-800"} cursor-pointer border-b-4 border-blue-800  hover:border-blue-950  p-2`}  >Terminadas</div>
+            <div onClick={()=>selectTab("Entregada")} className={`${tabSelected === "Entregada" ? "border-blue-950" : "border-blue-800"} cursor-pointer border-b-4 border-blue-800  hover:border-blue-950  p-2`} >Entregadas</div>
+          </div>
+          <div > <button onClick={()=>navigate('/NuevaReparacion')} className='btnAgregar cursor-pointer'>Nueva</button></div>
         </div>
         {/* tabla de filtros */}
         {/* <div className='col-span-1 bg-blue-900  my-[20px] m-[20px]'>
           FILTROS
         </div> */}
-        <div className='col-span-1  my-[20px] m-[20px]'>
+        <div className='col-span-1  my-[5px] m-[20px]'>
             <table className="min-w-full divide-y divide-gray-200">
               <thead>
                 <tr className='bg-blue-950 text-white h-7'>
