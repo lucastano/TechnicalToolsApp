@@ -29,6 +29,6 @@
     @apply bg-green-300 text-green-700 p-3  rounded-sm w-[100%]
   }
   .btnIconosGrid {
-    @apply bg-blue-950 text-white rounded-sm p-1 hover:bg-blue-800 cursor-pointer 
+    @apply bg-blue-900 text-white rounded-sm p-1 hover:bg-blue-950 cursor-pointer 
   }
  }
