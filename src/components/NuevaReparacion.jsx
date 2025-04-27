@@ -68,19 +68,19 @@ export const NuevaReparacion = ({openValue,onClose}) => {
     }
   return (
     <>
-       <div classNameName='grid grid-cols-1 lg:grid-cols-3 bg-gray-50 h-auto my-[20px] mx-[20px] gap-8 py-3 px-2'>
+       <div className='grid grid-cols-1 lg:grid-cols-3 bg-gray-50 h-auto my-[20px] mx-[20px] gap-8 py-3 px-2'>
         <form onSubmit={handleSubmit} >
-          <div classNameName='col col-span-1 p-2'>
+          <div className='col col-span-1 p-2'>
             {/* input cedula */}
-            <label for="ci" classNameName="block mb-1 text-sm/6 font-medium text-gray-900">Cedula identidad</label>
-            <div classNameName='flex items-center gap-2' >
-             <input onChange={onChangeCedula} type="text" name="ci" id="ci" classNameName=" w-full bg-white block min-w-0 py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" placeholder="Cedula de identidad"/>
-             <button classNameName='btnAddSmall'>+</button>
+            <label for="ci" className="block mb-1 text-sm/6 font-medium text-gray-900">Cedula identidad</label>
+            <div className='flex items-center gap-2' >
+             <input onChange={onChangeCedula} type="text" name="ci" id="ci" className=" w-full bg-white block min-w-0 py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" placeholder="Cedula de identidad"/>
+             <button className='btnAddSmall'>+</button>
             </div>
           </div>
-          <div classNameName='col col-span-1  p-2' >
-            <label for="equipo" classNameName="block mb-1 text-sm/6 font-medium text-gray-900">Equipo</label>
-            <select onChange={onChangeEquipo} id="equipo" name="equipo" autocomplete="equipo" classNameName=" w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+          <div className='col col-span-1  p-2' >
+            <label for="equipo" className="block mb-1 text-sm/6 font-medium text-gray-900">Equipo</label>
+            <select onChange={onChangeEquipo} id="equipo" name="equipo" autocomplete="equipo" className=" w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
                 <option value={0} >seleccione equipo..</option>
                {
                 productos.map((p)=>(
@@ -89,27 +89,27 @@ export const NuevaReparacion = ({openValue,onClose}) => {
                }
               </select>
           </div>
-          <div classNameName='col col-span-1  p-2'>
-            <label for="numeroSerie" classNameName="block mb-1 text-sm/6 font-medium text-gray-900">Numero de serie</label>
-            <input onChange={onChangeNumeroSerie} type="text" name="numeroSerie" id="nomnumeroSeriebre" classNameName="w-full bg-white block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" placeholder="Numero de serie"/>
+          <div className='col col-span-1  p-2'>
+            <label for="numeroSerie" className="block mb-1 text-sm/6 font-medium text-gray-900">Numero de serie</label>
+            <input onChange={onChangeNumeroSerie} type="text" name="numeroSerie" id="nomnumeroSeriebre" className="w-full bg-white block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" placeholder="Numero de serie"/>
           </div>
-          <div classNameName='col col-span-1  p-2'>
-            <label for="falla" classNameName="block mb-1 text-sm/6 font-medium text-gray-900">Descripcion de falla/desperfecto</label>
-            <textarea onChange={onChangeDescripcion} name="falla" id="falla" rows="3" classNameName="w-full block rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
+          <div className='col col-span-1  p-2'>
+            <label for="falla" className="block mb-1 text-sm/6 font-medium text-gray-900">Descripcion de falla/desperfecto</label>
+            <textarea onChange={onChangeDescripcion} name="falla" id="falla" rows="3" className="w-full block rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
           </div>
-          <div classNameName='col col-span-1  p-2'>
-            <label for="fechaPresupuesto" classNameName="block mb-1 text-sm/6 font-medium text-gray-900">Fecha aproximada del presupuesto</label>
+          <div className='col col-span-1  p-2'>
+            <label for="fechaPresupuesto" className="block mb-1 text-sm/6 font-medium text-gray-900">Fecha aproximada del presupuesto</label>
             <input  onChange={onChangeFechaPresupuesto}
               type="date"
               id="fechaPresupuesto"
               name="fechaPresupuesto"
-              classNameName="border border-gray-300 rounded px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-300 rounded px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          <div classNameName='col col-span-1  p-2'>
+          <div className='col col-span-1  p-2'>
             {/* seccion de botones return y aceptar */}
-            <button onClick={()=>navigate('/Reparaciones')}  classNameName='btnCancelar'>Cancelar</button>
-            <button type='submit' classNameName='btnAceptar'>Aceptar</button>
+            <button onClick={()=>navigate('/Reparaciones')}  className='btnCancelar'>Cancelar</button>
+            <button type='submit' className='btnAceptar'>Aceptar</button>
           </div>
         </form>
        </div>
