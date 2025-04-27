@@ -8,6 +8,7 @@ import { ListadoReparaciones } from './components/ListadoReparaciones';
 import { UserProfile } from './components/UserProfile';
 import { Empresa } from './components/Empresa';
 import { NuevaReparacion } from './components/NuevaReparacion';
+import {DashBoardGrid} from './components/DashBoardGrid';
 function App() {
   return (
     <>
@@ -22,6 +23,7 @@ function App() {
             <Route path='/PerfilUsuario' element={<UserProfile />} />
             <Route path='/Empresa' element={<Empresa />} />
             <Route path='/NuevaReparacion' element={<NuevaReparacion />} />
+            <Route path='/DashBoard' element = {<DashBoardGrid/>}/>
           </Route>
         </Route>
       </Routes>

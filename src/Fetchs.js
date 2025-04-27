@@ -104,8 +104,6 @@ try{
 catch(error){
  return  { success: false, message: error.message }
 }
-
-
 }
 async function getClientes() {
   const url = urlBase + '/api/Clientes'
@@ -127,6 +125,31 @@ async function getClientes() {
     }
   } catch (error) {
     throw error;
+  }
+}
+
+async function getClienteByCi(ci) {
+  console.log('ci', ci)
+  const url = urlBase + `/api/Clientes/ObtenerClientePorCi?ci=${ci}`
+  const token = localStorage.getItem("Token");
+  const opciones = {
+    method: "GET",
+    headers: {
+      accept: "text/plain",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  try {
+    const respuesta = await fetch(url, opciones);
+    if (!respuesta.ok) {
+      throw new Error(`HTTP error! status: ${respuesta.status}`);
+    } else {
+      const datos = await respuesta.json();
+      return datos;
+    }
+  } catch (error) {
+    return error.message;
   }
 }
 
@@ -405,20 +428,20 @@ async function getProductos(){
     const response = await fetch(url,opciones); // Cambia esta URL según tu API
     let data = await response.json();
     if (data) {
+      return data;
     }
   } catch (error) {
     console.error('Error al obtener la foto:', error);
   }
 }
 async function postReparacion(data){
-  console.log('data', data)
-  console.log('data', data)
   const url = urlBase + `/api/Reparaciones`
   const token = localStorage.getItem("Token");
   const opciones = {
     method:"POST",
     headers:{
       'Content-Type':'application/json',
+      Authorization : `Bearer ${token}`,
     },
     body:JSON.stringify(data),
   }
@@ -426,13 +449,13 @@ async function postReparacion(data){
     const response = await fetch(url,opciones);
     if(!response.ok){
       const errorData = await response.json();
-      throw new Error(errorData.message)
+       throw new Error(errorData.message)
     }
     const data = await response.json();
     return { success: true, data }; 
   }
   catch(error){
-   return  { success: false, message: error.message }
+   return  { success: false, message: "error desde el servidor" }
   }
 }
 
@@ -487,5 +510,6 @@ export {
   fetModificarSucursal,
   postReparacion,
   postCliente,
-  loginprueba
+  loginprueba,
+  getClienteByCi
 }

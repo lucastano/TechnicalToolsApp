@@ -12,7 +12,7 @@ export const UserProfile = () => {
     const navigate = useNavigate();
 
     const handleVolver =()=>{
-      navigate("/")
+      navigate("/Login")
     }
    
   return (

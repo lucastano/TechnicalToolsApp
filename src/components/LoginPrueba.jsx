@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import CircularProgress from '@mui/material/CircularProgress';
-import {loginFetch,loginprueba,getClientes,getTecnicos,getReparaciones,getEmpresa,getSucursal,getProductos} from '../Fetchs'
+import {loginFetch} from '../Fetchs'
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -15,7 +15,6 @@ export const LoginPrueba = ({setAutenticacion}) => {
      const {isAuthenticated,login} = useAuth()
     useEffect(() => {
         if (isAuthenticated) {
-            console.log('entra a isAuthenticated')
             navigate("/Reparaciones",{replace:true})
         }
      

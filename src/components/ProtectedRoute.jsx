@@ -8,7 +8,6 @@ export const ProtectedRoute = () => {
     console.log('isAuthenticated', isAuthenticated)
   return (
     <>
-    {/* {token ? <Outlet/> : <Navigate to="/Login" replace/>} */}
     {isAuthenticated ? <Outlet /> : <Navigate to="/Login" replace />}
     </>
   )

@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { use } from 'react';
 import { getEmpresa } from '../Fetchs';
+import { current } from '@reduxjs/toolkit';
 const navigation = [
   { name: 'Reparaciones',Direccion:'Reparaciones', current: true },
   { name: 'Perfil Usuario', Direccion: 'PerfilUsuario', current: false },
   { name: 'Empresa', Direccion: 'Empresa', current: false },
   { name: 'Nueva Reparacion', Direccion: 'NuevaReparacion', current: false },
+  { name:'DashBoard',Direccion:'DashBoard',current:false},
 ]
 
 function classNameNames(...classNamees) {

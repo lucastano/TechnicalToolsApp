@@ -1,31 +1,51 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { postReparacion ,postCliente} from '../Fetchs';
+import { postReparacion ,postCliente, getProductos, getClientes, getClienteByCi} from '../Fetchs';
 import { useNavigate } from 'react-router-dom';
+//body reparaciones
+// {
+//   "ciCliente": "string",
+//   "idTecnico": 0,
+//   "idEmpresa": 0,
+//   "idSucursal": 0,
+//   "idProducto": 0,
+//   "numeroSerie": "string",
+//   "descripcion": "string",
+//   "fechaPromesaPresupuesto": "2025-04-27T00:45:09.972Z"
+// }
 
-export const NuevaReparacion = ({openValue,onClose}) => {
-  
+export const NuevaReparacion = () => {
     const [descripcion, setdescripcion] = useState("")
     const [numeroSerie, setnumeroSerie] = useState("")
     const [ciCliente, setciCliente] = useState("")
     const [equipo, setequipo] = useState(0)
     const [fechaPresupuesto,setfechaPresupuesto] = useState("");
-    const productos = useSelector(selectProductos);
-    const emp = useSelector(selectEmpresa);
-    const suc = useSelector(selectSucursal);
-    const usu = useSelector(selectUsuario);
-    const dispatch = useDispatch()
+    const [productos, setproductos] = useState([])
+    const [userLoged, setuserLoged] = useState({})
+    const [error, seterror] = useState(false)
+    const [success, setsuccess] = useState(false)
+    const [clienteExistente, setclienteExistente] = useState(true)
+    const [errorDsc, seterrorDsc] = useState("")
     const navigate = useNavigate();
     useEffect(() => {
-      
-      // setproductosSelect(productos)
-      console.log('productos', productos)
+      CargarDatosNegocio()
     }, [])
 
-    const onChangeCedula =(event)=>{
-      setciCliente(event.target.value);
-      
+    const CargarDatosNegocio = async() =>{
+      const productosResponse = await getProductos()
+      setproductos(productosResponse)
+      const usu = JSON.parse(localStorage.getItem("UsuarioLog"))
+      setuserLoged(usu)
+    }
 
+    const onChangeCedula = async(event)=>{
+      const responseGetCliente = await getClienteByCi(event.target.value)
+      if(responseGetCliente.statusCode != 200){
+        setclienteExistente(false)
+      }else{
+        setciCliente(event.target.value);
+        setclienteExistente(true)
+      }
+      // el fetch por ahora responde undefined si no existe el cliente, ya lo arregle en el backend pero no lo actualice en el servidor
     }
     const onChangeEquipo = (event)=>{
       const idEquipo = Number(event.target.value);
@@ -42,27 +62,37 @@ export const NuevaReparacion = ({openValue,onClose}) => {
     }
     
     const handleSubmit = async(event)=>{
+      
       event.preventDefault()
       const reparacion ={
         ciCliente:ciCliente,
-        idTecnico:usu.userId,
-        idEmpresa:emp.id,
-        idSucursal:suc.id,
+        idTecnico:userLoged.id,
+        idEmpresa:userLoged.idEmpresa,
+        idSucursal:userLoged.idSucursal,
         idProducto:equipo,
         numeroSerie:numeroSerie,
         descripcion:descripcion,
         fechaPromesaPresupuesto:fechaPresupuesto
       }
-      console.log('reparacion antes de post', reparacion)
-      const response = await postReparacion(dispatch,reparacion);
+      const response = await postReparacion(reparacion);
       if(!response.success)
       {
         // no se agrego
+        seterror(true)
+        setTimeout(() => {
+          seterror(false)
+        }, 2000);
       }
       else
       {
         // se agrego reparacion
-        navigate('/Reparaciones')
+       
+        setsuccess(true)
+        setTimeout(() => {
+          setsuccess(false)
+           navigate('/Reparaciones')
+        }, 1500);
+       
       }
 
     }
@@ -73,9 +103,11 @@ export const NuevaReparacion = ({openValue,onClose}) => {
           <div className='col col-span-1 p-2'>
             {/* input cedula */}
             <label for="ci" className="block mb-1 text-sm/6 font-medium text-gray-900">Cedula identidad</label>
-            <div className='flex items-center gap-2' >
-             <input onChange={onChangeCedula} type="text" name="ci" id="ci" className=" w-full bg-white block min-w-0 py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" placeholder="Cedula de identidad"/>
-             <button className='btnAddSmall'>+</button>
+            {/* <div className='flex items-center gap-2' > */}
+            <div>
+             <input onBlur={onChangeCedula} type="text" name="ci" id="ci" className=" w-full bg-white block min-w-0 py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" placeholder="Cedula de identidad"/>
+              {!clienteExistente && <p className='text-red-500 my-2 peer' >Cliente no existente en el sistema</p> }
+             {/* <button className='btnAddSmall'>+</button> */}
             </div>
           </div>
           <div className='col col-span-1  p-2' >
@@ -108,9 +140,27 @@ export const NuevaReparacion = ({openValue,onClose}) => {
           </div>
           <div className='col col-span-1  p-2'>
             {/* seccion de botones return y aceptar */}
-            <button onClick={()=>navigate('/Reparaciones')}  className='btnCancelar'>Cancelar</button>
+            <button type='button' onClick={()=>navigate('/Reparaciones')}  className='btnCancelar'>Cancelar</button>
             <button type='submit' className='btnAceptar'>Aceptar</button>
           </div>
+          {error &&
+            <div className='alertError flex items-center gap-2' >
+              {/* aca va a ir segun lo que responda el fetch */}
+              <svg  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+              </svg>
+              <p>  Error al crear la reparacion</p>
+            </div>
+          }
+          {success &&
+            <div className='alertSuccess flex items-center gap-2' >
+            {/* aca va a ir segun lo que responda el fetch */}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+              <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd" />
+            </svg>
+              <p>  Reparacion ingresada correctamente</p>
+            </div>
+          }
         </form>
        </div>
     </>
