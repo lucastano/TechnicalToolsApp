@@ -4,12 +4,12 @@ import { Tab, Tabs } from 'react-bootstrap'
 export const FiltroReparaciones = ({setSelected}) => {
 
   return (
-    <div className='row'>
-        <div style={{marginRight:'100px',marginLeft:'100px'}} className='col col-10'>
+    <div classNameName='row'>
+        <div style={{marginRight:'100px',marginLeft:'100px'}} classNameName='col col-10'>
         <Tabs
         defaultActiveKey="profile"
         id="justify-tab-example"
-        className="mb-3"
+        classNameName="mb-3"
         justify
     >
         <Tab onClick={setSelected("EnReparacion")} eventKey="enReparacion" title="En Reparacion">

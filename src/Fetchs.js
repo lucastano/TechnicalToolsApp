@@ -175,6 +175,7 @@ async function getAdministradores() {
   }
 }
 async function getReparaciones(user) {
+  console.log('entre fetch reparaciones con user', user)
   const url = urlBase + '/api/Reparaciones/TodasLasReparaciones';
   const token = localStorage.getItem("Token");
   const opciones = {
@@ -184,7 +185,6 @@ async function getReparaciones(user) {
       Authorization: `Bearer ${token}`,
     },
   };
-  console.log('user', user)
   try {
     const respuesta = await fetch(url, opciones);
     if (!respuesta.ok) {
@@ -192,8 +192,14 @@ async function getReparaciones(user) {
     } else {
       const datos = await respuesta.json();
       const reparaciones = datos.reparaciones;
-      return reparaciones;
-      
+      if(user.rol === "Tecnico"){
+        const reparacionesFiltradas = reparaciones.filter(reparacion => reparacion.tecnicoId === user.id);
+        console.log('reparacionesFiltradas en fetch', reparacionesFiltradas)
+        return reparacionesFiltradas;
+      }
+      if(user.rol === "Administrador"){
+        return reparaciones;
+      }      
     }
   } catch (error) {
     throw error;
@@ -239,6 +245,7 @@ async function getEmpresa(idEmpresa){
     data.foto =urlPhoto
     if (data && data.foto) {
     }
+    return data;
   } catch (error) {
     console.error('Error al obtener la foto:', error);
   }

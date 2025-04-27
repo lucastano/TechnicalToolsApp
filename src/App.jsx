@@ -1,5 +1,5 @@
 
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes,Navigate } from 'react-router-dom';
 import './App.css'
 import { LoginPrueba } from './components/LoginPrueba';
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -13,6 +13,7 @@ function App() {
     <>
       <Routes>
         {/* ruta publica */}
+        <Route path='/' element={<Navigate to="/Login" replace />} />
         <Route path='/Login' element={<LoginPrueba/>}/>
         {/* rutas protegidas  */}
         <Route element={<ProtectedRoute />}>

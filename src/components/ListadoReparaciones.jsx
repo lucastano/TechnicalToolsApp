@@ -1,25 +1,30 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { generarOrdSrv } from '../Fetchs';
+import { generarOrdSrv, getReparaciones } from '../Fetchs';
 import { NuevaReparacion } from './NuevaReparacion';
 import { AccionesReparacion } from './AccionesReparacion';
 
 
 export const ListadoReparaciones = () => {
- 
-  
-  const [rolUsuario, setrolUsuario] = useState("")
+const [reparaciones, setreparaciones] = useState([])
+const [user, setuser] = useState({})
   const navigate = useNavigate();
   
   useEffect(() => {
-    const Token = localStorage.getItem("Token")
-    if(Token ==""){
-
-    }
-    else{
-    }
+    cargarReparaciones()
   }, [])
+
+
+  const cargarReparaciones = async () => 
+  {
+    const usuarioLog = JSON.parse(localStorage.getItem('UsuarioLog'))
+    const reparacionesResponse = await getReparaciones(usuarioLog)
+    console.log('reparacionesResponse', reparacionesResponse)
+    console.log('reparaciones usestate', reparaciones)
+    setreparaciones(reparacionesResponse)
+  }
+
 
   return (
     <>
@@ -44,8 +49,8 @@ export const ListadoReparaciones = () => {
                 </tr>
               </thead>
               <tbody>
-                {/* {
-                  rep.map((r,i) =>(
+                {
+                  reparaciones.map((r,i) =>(
                     <tr key={i} className='even:bg-gray-200 hover:bg-gray-100 transition h-7'>
                       <td className='text-center'>{r.id}</td> 
                       <td className='text-center'>{r.fecha}</td>
@@ -54,7 +59,7 @@ export const ListadoReparaciones = () => {
                       <td className='text-center'>{r.numeroSerie}</td>
                       <td className='text-center'>ACCIONES</td>
                   </tr>
-                  ))} */}
+                  ))}
                 
               </tbody>
               </table>
@@ -88,11 +93,11 @@ export const ListadoReparaciones = () => {
                   <span class="sr-only">Next</span>
                   <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
                     <path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
-                  </svg>
+                </svg>
                 </a>
               </nav>
             </div>
-          </div>
+            </div>
           </div>
         </div>
     </>

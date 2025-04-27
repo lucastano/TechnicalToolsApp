@@ -58,56 +58,56 @@ export const LoginPrueba = ({setAutenticacion}) => {
         setrol(event.target.value)
     }
   return (
-    <div className='grid grid-cols-1  md:grid-cols-3 md:m-20'>
-        <div className=' hidden md:block col-span-2 bg-linear-to-r from-cyan-500 to-blue-500 '>
+    <div classNameName='grid grid-cols-1  md:grid-cols-3 md:m-20'>
+        <div classNameName=' hidden md:block col-span-2 bg-linear-to-r from-cyan-500 to-blue-500 '>
 
             {/* este es el div de la imgen */}
         </div>
 
-        <div  className=' w-full col-span-1 bg-gray-100 rounded-r-3xl md:w-[400px] '> 
-            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-                <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <div  classNameName=' w-full col-span-1 bg-gray-100 rounded-r-3xl md:w-[400px] '> 
+            <div classNameName="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+                <div classNameName="sm:mx-auto sm:w-full sm:max-w-sm">
                 <img
                     alt="Your Company"
                     src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-                    className="mx-auto h-10 w-auto"
+                    classNameName="mx-auto h-10 w-auto"
                 />
-                <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
+                <h2 classNameName="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
                     Inicio de sesión
                 </h2>
                 </div>
 
-            <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form action="#" method="POST" className="space-y-6">
+            <div classNameName="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+            <form action="#" method="POST" classNameName="space-y-6">
                 <div>
-                <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
+                <label htmlFor="email" classNameName="block text-sm/6 font-medium text-gray-900">
                     Direccion de Email
                 </label>
-                <div className="mt-2">
+                <div classNameName="mt-2">
                     <input
                     onChange={onChangeUser}
                     id="email"
                     name="email"
                     type="email"
                     autoComplete="email"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-1  focus:outline-blue-500 invalid:focus:outline-red-400 sm:text-sm/6 peer"
+                    classNameName="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-1  focus:outline-blue-500 invalid:focus:outline-red-400 sm:text-sm/6 peer"
                     />
-                    <p className='text-red-400 text-xs hidden peer-invalid:block mt-1.5 w-full'>Formato de correo no valido.</p>
+                    <p classNameName='text-red-400 text-xs hidden peer-invalid:block mt-1.5 w-full'>Formato de correo no valido.</p>
                 </div>
                 </div>
 
                 <div>
-                    <div className="flex items-center justify-between">
-                        <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
+                    <div classNameName="flex items-center justify-between">
+                        <label htmlFor="password" classNameName="block text-sm/6 font-medium text-gray-900">
                         Contraseña
                         </label>
-                        <div className="text-sm">
-                        <a href="#" className="font-semibold text-blue-600 hover:text-blue-500">
+                        <div classNameName="text-sm">
+                        <a href="#" classNameName="font-semibold text-blue-600 hover:text-blue-500">
                                 Olvidaste tu contraseña?
                         </a>
                         </div>
                     </div>
-                    <div className="mt-2">
+                    <div classNameName="mt-2">
                         <input
                         onChange={onChangePass}
                         id="password"
@@ -115,15 +115,15 @@ export const LoginPrueba = ({setAutenticacion}) => {
                         type="password"
                         required
                         autoComplete="current-password"
-                        className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6"
+                        classNameName="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6"
                         />
                     </div>
                 </div>
                 <div>
-                    <label htmlFor="select"  className="block text-sm/6 font-medium text-gray-900 focus:outline-blue-500 " >Rol</label>
-                    <div className="mt-2">
+                    <label htmlFor="select"  classNameName="block text-sm/6 font-medium text-gray-900 focus:outline-blue-500 " >Rol</label>
+                    <div classNameName="mt-2">
 
-                        <select value={rol} onChange={onChangeRol} id="select" name="select" className="mb-10 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6">
+                        <select value={rol} onChange={onChangeRol} id="select" name="select" classNameName="mb-10 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6">
                             <option value="" disabled>Selecciona una opción</option>
                             <option value="Tecnico">Tecnico</option>
                             <option value="Administrador" >Administrador</option>
@@ -133,12 +133,12 @@ export const LoginPrueba = ({setAutenticacion}) => {
                     <button
                         onClick={onHandleLogin}
                         type="submit"
-                        className="flex w-full justify-center rounded-md bg-linear-to-r from-cyan-500 to-blue-500 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-linear-to-r hover:from-cyan-600 hover:to-blue-600 focus-visible:outline-2 focus-visible:outline-offset-1  ..."
+                        classNameName="flex w-full justify-center rounded-md bg-linear-to-r from-cyan-500 to-blue-500 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-linear-to-r hover:from-cyan-600 hover:to-blue-600 focus-visible:outline-2 focus-visible:outline-offset-1  ..."
                     >
                         Iniciar
                     </button>
 
-                    <div className={`flex w-full justify-center my-12 ${loading ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}>
+                    <div classNameName={`flex w-full justify-center my-12 ${loading ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}>
                             <CircularProgress />
                     </div>
                 </div>

@@ -16,19 +16,19 @@ export const NewDash = () => {
     
 
   return (
-        <div className='flex place-content-around  bg-gray-100 rounded-2xl h-180 mx-10 my-10 p-7 flex-wrap' >
-          <div className=' bg-white w-96 h-24 grid place-content-center rounded-lg m-7  text-black '>
+        <div classNameName='flex place-content-around  bg-gray-100 rounded-2xl h-180 mx-10 my-10 p-7 flex-wrap' >
+          <div classNameName=' bg-white w-96 h-24 grid place-content-center rounded-lg m-7  text-black '>
                
           </div>
-          <div className=' bg-white w-96 h-24 grid place-content-center rounded-lg m-7  text-black '>
+          <div classNameName=' bg-white w-96 h-24 grid place-content-center rounded-lg m-7  text-black '>
                
           </div>
-          <div className=' bg-white w-96 h-24 grid place-content-center rounded-lg m-7  text-black '>
+          <div classNameName=' bg-white w-96 h-24 grid place-content-center rounded-lg m-7  text-black '>
                
           </div>
-            <div className=' bg-white w-72 h-72 grid place-content-center rounded-lg m-7  text-black  '>two</div>
-            <div className=' bg-white w-72 h-72 grid place-content-center rounded-lg m-7  text-black overflow-hidden '>
-            <span className='text-center text-lg space-y-2 ' >Reparaciones mensuales por tecnico</span>
+            <div classNameName=' bg-white w-72 h-72 grid place-content-center rounded-lg m-7  text-black  '>two</div>
+            <div classNameName=' bg-white w-72 h-72 grid place-content-center rounded-lg m-7  text-black overflow-hidden '>
+            <span classNameName='text-center text-lg space-y-2 ' >Reparaciones mensuales por tecnico</span>
                  <BarChart
                       xAxis={[
                         {
@@ -47,10 +47,10 @@ export const NewDash = () => {
                     />
             </div>
             
-            <div className=' bg-white w-72 h-72 grid place-content-center rounded-lg m-7  text-black  '>
+            <div classNameName=' bg-white w-72 h-72 grid place-content-center rounded-lg m-7  text-black  '>
                 
             </div>
-            <div className=' bg-white w-72 h-72 grid place-content-center rounded-lg m-7  text-black  '>two</div>
+            <div classNameName=' bg-white w-72 h-72 grid place-content-center rounded-lg m-7  text-black  '>two</div>
             
             
         </div>
