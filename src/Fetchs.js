@@ -425,8 +425,9 @@ async function getProductos(){
     },
   }
   try {
-    const response = await fetch(url,opciones); // Cambia esta URL según tu API
+    const response = await fetch(url,opciones); 
     let data = await response.json();
+    console.log('data', data)
     if (data) {
       return data;
     }

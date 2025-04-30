@@ -9,6 +9,7 @@ import { UserProfile } from './components/UserProfile';
 import { Empresa } from './components/Empresa';
 import { NuevaReparacion } from './components/NuevaReparacion';
 import {DashBoardGrid} from './components/DashBoardGrid';
+import { Presupuestar } from './components/Presupuestar';
 function App() {
   return (
     <>
@@ -24,6 +25,7 @@ function App() {
             <Route path='/Empresa' element={<Empresa />} />
             <Route path='/NuevaReparacion' element={<NuevaReparacion />} />
             <Route path='/DashBoard' element = {<DashBoardGrid/>}/>
+            <Route path='/Presupuestar/:id' element={<Presupuestar/>} />
           </Route>
         </Route>
       </Routes>
