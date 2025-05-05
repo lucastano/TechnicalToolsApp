@@ -23,7 +23,10 @@
     @apply bg-green-700 text-white m-2 w-[40px] h-[40px] text-xl hover:bg-green-600 flex items-center justify-center
   }
   .alertError {
-    @apply bg-red-400 text-red-900 p-3  rounded-sm w-[100%]
+    @apply bg-red-400 text-red-900 p-3 rounded-sm w-[100%]
+  }
+  .alertErrorLogin {
+    @apply bg-red-400 text-red-900 p-3 text-xs rounded-sm w-[100%]
   }
   .alertSuccess {
     @apply bg-green-300 text-green-700 p-3  rounded-sm w-[100%]

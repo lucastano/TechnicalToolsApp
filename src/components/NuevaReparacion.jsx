@@ -99,10 +99,10 @@ export const NuevaReparacion = () => {
   return (
     <>
        <div className='grid grid-cols-1 lg:grid-cols-3 bg-gray-50 h-auto my-[20px] mx-[20px] gap-8 py-3 px-2'>
-        <form onSubmit={handleSubmit} >
+        <htmlForm onSubmit={handleSubmit} >
           <div className='col col-span-1 p-2'>
             {/* input cedula */}
-            <label for="ci" className="block mb-1 text-sm/6 font-medium text-gray-900">Cedula identidad</label>
+            <label htmlFor="ci" className="block mb-1 text-sm/6 font-medium text-gray-900">Cedula identidad</label>
             {/* <div className='flex items-center gap-2' > */}
             <div>
              <input onBlur={onChangeCedula} type="text" name="ci" id="ci" className=" w-full bg-white block min-w-0 py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" placeholder="Cedula de identidad"/>
@@ -111,8 +111,8 @@ export const NuevaReparacion = () => {
             </div>
           </div>
           <div className='col col-span-1  p-2' >
-            <label for="equipo" className="block mb-1 text-sm/6 font-medium text-gray-900">Equipo</label>
-            <select onChange={onChangeEquipo} id="equipo" name="equipo" autocomplete="equipo" className=" w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+            <label htmlFor="equipo" className="block mb-1 text-sm/6 font-medium text-gray-900">Equipo</label>
+            <select onChange={onChangeEquipo} id="equipo" name="equipo" autoComplete="equipo" className=" w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
                 <option value={0} >seleccione equipo..</option>
                {
                 productos.map((p)=>(
@@ -122,15 +122,15 @@ export const NuevaReparacion = () => {
               </select>
           </div>
           <div className='col col-span-1  p-2'>
-            <label for="numeroSerie" className="block mb-1 text-sm/6 font-medium text-gray-900">Numero de serie</label>
-            <input onChange={onChangeNumeroSerie} type="text" name="numeroSerie" id="nomnumeroSeriebre" className="w-full bg-white block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" placeholder="Numero de serie"/>
+            <label htmlFor="numeroSerie" className="block mb-1 text-sm/6 font-medium text-gray-900">Numero de serie</label>
+            <input onChange={onChangeNumeroSerie} type="text" name="numeroSerie" id="numeroSerie" className="w-full bg-white block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" placeholder="Numero de serie"/>
           </div>
           <div className='col col-span-1  p-2'>
-            <label for="falla" className="block mb-1 text-sm/6 font-medium text-gray-900">Descripcion de falla/desperfecto</label>
+            <label htmlFor="falla" className="block mb-1 text-sm/6 font-medium text-gray-900">Descripcion de falla/desperfecto</label>
             <textarea onChange={onChangeDescripcion} name="falla" id="falla" rows="3" className="w-full block rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
           </div>
           <div className='col col-span-1  p-2'>
-            <label for="fechaPresupuesto" className="block mb-1 text-sm/6 font-medium text-gray-900">Fecha aproximada del presupuesto</label>
+            <label htmlFor="fechaPresupuesto" className="block mb-1 text-sm/6 font-medium text-gray-900">Fecha aproximada del presupuesto</label>
             <input  onChange={onChangeFechaPresupuesto}
               type="date"
               id="fechaPresupuesto"
@@ -140,8 +140,8 @@ export const NuevaReparacion = () => {
           </div>
           <div className='col col-span-1  p-2'>
             {/* seccion de botones return y aceptar */}
-            <button type='button' onClick={()=>navigate('/Reparaciones')}  className='btnCancelar'>Cancelar</button>
             <button type='submit' className='btnAceptar'>Aceptar</button>
+            <button type='button' onClick={()=>navigate('/Reparaciones')}  className='btnCancelar'>Cancelar</button>         
           </div>
           {error &&
             <div className='alertError flex items-center gap-2' >
@@ -161,7 +161,7 @@ export const NuevaReparacion = () => {
               <p>  Reparacion ingresada correctamente</p>
             </div>
           }
-        </form>
+        </htmlForm>
        </div>
     </>
   )

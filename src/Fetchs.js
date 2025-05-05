@@ -496,6 +496,30 @@ async function loginprueba() {
   }
   
 }
+
+const postPresupuesto = async (data) => {
+  const url = urlBase + '/api/Reparaciones/Presupuestar'
+  console.log('data en fetch', data)
+  const token = localStorage.getItem("Token");
+  const opciones = {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  };
+  try {
+    const response = await fetch(url, opciones);
+    console.log('response', response)
+    if (!response.ok) {
+      throw new Error('Error al crear el presupuesto');
+    }
+    return response.status;
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
 export {
   loginFetch,
   getClientes,
@@ -512,5 +536,6 @@ export {
   postReparacion,
   postCliente,
   loginprueba,
-  getClienteByCi
+  getClienteByCi,
+  postPresupuesto
 }
