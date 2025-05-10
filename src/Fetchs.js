@@ -267,8 +267,9 @@ async function getEmpresa(idEmpresa){
     const urlPhoto = urlBase+data.foto;
     data.foto =urlPhoto
     if (data && data.foto) {
+      return data;
     }
-    return data;
+    
   } catch (error) {
     console.error('Error al obtener la foto:', error);
   }
@@ -289,7 +290,7 @@ async function getSucursal(idSucursal){
     const response = await fetch(url,opciones); // Cambia esta URL según tu API
     let data = await response.json();
     if (data ) {
-      console.log('sucursal despues del fetch', data)
+     return data;
     }
   } catch (error) {
     console.error('Error al obtener la foto:', error);

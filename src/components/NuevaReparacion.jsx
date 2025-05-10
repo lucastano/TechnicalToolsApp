@@ -45,7 +45,6 @@ export const NuevaReparacion = () => {
         setciCliente(event.target.value);
         setclienteExistente(true)
       }
-      // el fetch por ahora responde undefined si no existe el cliente, ya lo arregle en el backend pero no lo actualice en el servidor
     }
     const onChangeEquipo = (event)=>{
       const idEquipo = Number(event.target.value);
@@ -62,44 +61,65 @@ export const NuevaReparacion = () => {
     }
     
     const handleSubmit = async(event)=>{
-      
       event.preventDefault()
-      const reparacion ={
-        ciCliente:ciCliente,
-        idTecnico:userLoged.id,
-        idEmpresa:userLoged.idEmpresa,
-        idSucursal:userLoged.idSucursal,
-        idProducto:equipo,
-        numeroSerie:numeroSerie,
-        descripcion:descripcion,
-        fechaPromesaPresupuesto:fechaPresupuesto
-      }
-      const response = await postReparacion(reparacion);
-      if(!response.success)
-      {
-        // no se agrego
+      //validar que los campos no esten vacios
+      if (descripcion == "" || numeroSerie == "" || ciCliente == "" || equipo == 0 || fechaPresupuesto == "") {
         seterror(true)
+        seterrorDsc("Complete todos los campos")
         setTimeout(() => {
           seterror(false)
         }, 2000);
       }
       else
       {
-        // se agrego reparacion
-       
-        setsuccess(true)
-        setTimeout(() => {
-          setsuccess(false)
-           navigate('/Reparaciones')
-        }, 1500);
-       
+        const hoy = new Date();
+        const yyyy = hoy.getFullYear();
+        const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+        const dd = String(hoy.getDate()).padStart(2, '0');
+        const fechaHoyFormato = `${yyyy}-${mm}-${dd}`;
+        if (fechaPresupuesto < fechaHoyFormato){
+          seterror(true)
+          seterrorDsc("Fecha de presupuesto no puede ser menor a la fecha actual")
+          setTimeout(() => {
+            seterror(false)
+          }, 2000); 
+        }
+        else
+        {
+          const reparacion ={
+            ciCliente:ciCliente,
+            idTecnico:userLoged.id,
+            idEmpresa:userLoged.idEmpresa,
+            idSucursal:userLoged.idSucursal,
+            idProducto:equipo,
+            numeroSerie:numeroSerie,
+            descripcion:descripcion,
+            fechaPromesaPresupuesto:fechaPresupuesto
+            }
+            const response = await postReparacion(reparacion);
+            if(!response.success)
+            {
+              // no se agrego
+              seterror(true)
+              setTimeout(() => {
+                seterror(false)
+              }, 2000);
+            }
+            else
+            {
+              setsuccess(true)
+              setTimeout(() => {
+                setsuccess(false)
+                 navigate('/Reparaciones')
+              }, 1500);
+            }
+        }
       }
-
     }
   return (
     <>
        <div className='grid grid-cols-1 lg:grid-cols-3 bg-gray-50 h-auto my-[20px] mx-[20px] gap-8 py-3 px-2'>
-        <htmlForm onSubmit={handleSubmit} >
+        <form onSubmit={handleSubmit} >
           <div className='col col-span-1 p-2'>
             {/* input cedula */}
             <label htmlFor="ci" className="block mb-1 text-sm/6 font-medium text-gray-900">Cedula identidad</label>
@@ -149,7 +169,7 @@ export const NuevaReparacion = () => {
               <svg  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" class="size-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
               </svg>
-              <p>  Error al crear la reparacion</p>
+              <p>  {errorDsc}</p>
             </div>
           }
           {success &&
@@ -161,7 +181,7 @@ export const NuevaReparacion = () => {
               <p>  Reparacion ingresada correctamente</p>
             </div>
           }
-        </htmlForm>
+        </form>
        </div>
     </>
   )

@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { use } from 'react';
 import { getEmpresa } from '../Fetchs';
-import { current } from '@reduxjs/toolkit';
 const navigation = [
   { name: 'Reparaciones',Direccion:'Reparaciones', current: true },
   { name: 'Perfil Usuario', Direccion: 'PerfilUsuario', current: false },
@@ -12,9 +10,6 @@ const navigation = [
   { name:'DashBoard',Direccion:'DashBoard',current:false},
 ]
 
-function classNameNames(...classNamees) {
-  return classNamees.filter(Boolean).join(' ')
-}
 export const NavBar = ({setAutenticacion}) => {
   const [menuUser, setmenuUser] = useState(false)
   const [empresa, setempresa] = useState({})

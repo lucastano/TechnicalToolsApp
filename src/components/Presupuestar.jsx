@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { postPresupuesto } from '../Fetchs'
 
@@ -14,6 +14,7 @@ export const Presupuestar = () => {
     const [mensajeError, setmensajeError] = useState("")
     const [mensajeSuccess, setmensajeSuccess] = useState("")
 
+    
     const onHandleAdd = async (event) => {
         event.preventDefault()
         const data = {
@@ -24,27 +25,48 @@ export const Presupuestar = () => {
         }
 
         if (detalles != "" && costo != "" && fecha != "") {
-            const status = await postPresupuesto(data)
-            if (status == 200) {
-                setsuccess(true)
-                seterror(false)
-                setmensajeSuccess("Presupuesto agregado correctamente")
-                setTimeout(() => {
+
+            const hoy = new Date();
+            const yyyy = hoy.getFullYear();
+            const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+            const dd = String(hoy.getDate()).padStart(2, '0');
+            const fechaHoyFormato = `${yyyy}-${mm}-${dd}`;
+            if (data.fechaPromesaEntrega >= fechaHoyFormato) 
+            {
+                console.log('fecha es mayor ')
+                const status = await postPresupuesto(data)
+                if (status == 200) {
+                    setsuccess(true)
+                    seterror(false)
+                    setmensajeSuccess("Presupuesto agregado correctamente")
+                    setTimeout(() => {
+                        setsuccess(false)
+                        setmensajeSuccess("")
+                        navigate('/Reparaciones')
+                    }
+                    , 2000)
+                }else{
+                    seterror(true)
                     setsuccess(false)
-                    setmensajeSuccess("")
-                    navigate('/Reparaciones')
+                    setmensajeError("Error al agregar el presupuesto")
+                    setTimeout(() => {
+                        seterror(false)
+                        setmensajeError("")
+                    }, 2000)
                 }
-                , 2000)
-            }else{
+            }
+            else
+            {
                 seterror(true)
                 setsuccess(false)
-                setmensajeError("Error al agregar el presupuesto")
+                setmensajeError("Fecha de entrega no puede ser menor a la fecha actual")
                 setTimeout(() => {
                     seterror(false)
                     setmensajeError("")
                 }, 2000)
             }
         }else{
+            
             seterror(true)
             setsuccess(false)
             setmensajeError("Por favor complete todos los campos")
