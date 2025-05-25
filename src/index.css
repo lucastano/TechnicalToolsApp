@@ -11,10 +11,10 @@
     @apply text-6xl font-black text-black py-2
   }
   .btnCancelar {
-    @apply bg-red-600 text-white m-2  w-[100px] h-[40px] hover:bg-red-700
+    @apply bg-red-600 text-white m-2  w-[100px] h-[40px] hover:bg-red-700 cursor-pointer
   }
   .btnAceptar {
-    @apply  bg-green-600 text-white m-2  w-[100px] h-[40px] hover:bg-green-700
+    @apply  bg-green-600 text-white m-2  w-[100px] h-[40px] hover:bg-green-700 cursor-pointer
   }
   .btnAgregar {
     @apply  bg-green-700 text-white m-2  w-[100px] h-[40px] hover:bg-green-600 text-center rounded-sm

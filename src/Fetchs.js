@@ -521,6 +521,32 @@ const postPresupuesto = async (data) => {
     console.error('Error:', error);
   }
 };
+
+const postAceptarPresupuesto = async (id) => {
+  const url = urlBase + `/api/Reparaciones/AceptarPresupuesto?id=${id}`
+  const token = localStorage.getItem("Token");
+  const opciones = {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  try {
+    const response = await fetch(url, opciones);
+    console.log('response', response)
+    if (!response.ok) {
+      throw new Error('Error al crear el presupuesto');
+    }
+    return response.status;
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+const postCancelarPresupuesto = async (id) => {
+  //id costo razon
+const url = urlBase + '/api/Reparaciones/NoAceptarPresupuesto'
+}
 export {
   loginFetch,
   getClientes,
@@ -538,5 +564,6 @@ export {
   postCliente,
   loginprueba,
   getClienteByCi,
-  postPresupuesto
+  postPresupuesto,
+  postAceptarPresupuesto
 }

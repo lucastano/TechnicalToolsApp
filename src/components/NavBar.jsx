@@ -3,11 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getEmpresa } from '../Fetchs';
 const navigation = [
-  { name: 'Reparaciones',Direccion:'Reparaciones', current: true },
-  { name: 'Perfil Usuario', Direccion: 'PerfilUsuario', current: false },
-  { name: 'Empresa', Direccion: 'Empresa', current: false },
-  { name: 'Nueva Reparacion', Direccion: 'NuevaReparacion', current: false },
-  { name:'DashBoard',Direccion:'DashBoard',current:false},
+  { name: 'Reparaciones',Direccion:'Reparaciones', current: true }
 ]
 
 export const NavBar = ({setAutenticacion}) => {

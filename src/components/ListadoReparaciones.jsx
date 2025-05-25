@@ -1,10 +1,44 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { generarOrdSrv, getReparaciones } from '../Fetchs';
+import { generarOrdSrv, getReparaciones, postAceptarPresupuesto } from '../Fetchs';
+import { styled } from '@mui/material/styles';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import Typography from '@mui/material/Typography';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import Divider from '@mui/material/Divider';
+import DialogContentText from '@mui/material/DialogContentText';
 
 
+
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialogContent-root': {
+    padding: theme.spacing(2),
+  },
+  '& .MuiDialogActions-root': {
+    padding: theme.spacing(1),
+  },
+}));
 
 export const ListadoReparaciones = () => {
+  //open modal aceptar presupuesto
+  const [openAceptarPresupuesto, setOpenAceptarPresupuesto] = React.useState(false);
+  // open modal
+  const [open, setOpen] = React.useState(false);
+  // modo del modal
+  const [modo, setmodo] = useState("")
+  // reparacion seleccionada
+  const [repSeleccionada, setrepSeleccionada] = useState({})
+  const [idRepSeleccionada, setidRepSeleccionada] = useState(0)
+  // trato de re-renderizar el componente para probar si se vuelve a hacer el fetch de reparaciones 
+  const [renderizados, setrenderizados] = useState(0)
   const [reparaciones, setreparaciones] = useState([])
   const [user, setuser] = useState({})
   const [tabSelected, settabSelected] = useState("EnTaller")
@@ -17,6 +51,36 @@ export const ListadoReparaciones = () => {
       cargarReparaciones()
     }, [])
 
+    useEffect(() => {
+      cargarReparaciones()
+    }, [renderizados])
+    
+
+    const refresh =()=>{
+      let num = renderizados
+      num ++;
+      setrenderizados(num)
+    }
+ 
+    // controles para el modal visualizar y modificar reparaciones 
+      const handleClickOpen = () => {
+        setOpen(true);
+      };
+      const handleClose = () => {
+        setOpen(false);
+      };
+
+    const onClickModificar = (id) =>{
+      setmodo("Modificar")
+      handleClickOpen()
+    }
+    const onClickVisualizar =(id) =>{
+      const rep = currentItems.find(r =>r.id == id);
+      setrepSeleccionada(rep)
+      console.log('rep', rep)
+      setmodo("Visualizar")
+      handleClickOpen()
+    }
     const cargarReparaciones = async () => {
       const usuarioLog = JSON.parse(localStorage.getItem('UsuarioLog'))
       setuser(usuarioLog)
@@ -66,7 +130,6 @@ export const ListadoReparaciones = () => {
         let counterClickOnOrdAux = counterClickOnOrd + 1
         setcounterClickOnOrd(counterClickOnOrdAux);
       }
-      console.log('click en orden',counterClickOnOrd)
       //CERO - SIN FILTROS
       // UNO - DECRECIENTE
       if(counterClickOnOrd === 1){
@@ -98,19 +161,193 @@ export const ListadoReparaciones = () => {
     }
 
     const irPresupuestar = (id) => {
-      console.log('entro presupuestar')
       navigate(`/Presupuestar/${id}`)
     }
-  
+
+
+    //  const [openAceptarPresupuesto, setOpenAceptarPresupuesto] = React.useState(false);
+
+  const handleClickOpenAceptarPresupuesto = (id) => {
+    setidRepSeleccionada(id)
+    setOpenAceptarPresupuesto(true);
+  };
+
+  const handleCloseAceptarPresupuesto = () => {
+    setOpenAceptarPresupuesto(false);
+  };
+   const clickAceptarPresupuesto = async()=>{
+    const response = await postAceptarPresupuesto(idRepSeleccionada);
+    refresh()
+    handleCloseAceptarPresupuesto()
+   }
   
   return (
     <>
+    {/* inicia el modal para aceptar un presupuesto */}
+    <Dialog
+        open={openAceptarPresupuesto}
+        onClose={handleCloseAceptarPresupuesto}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          Aceptar presupuesto de reparación
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Aceptar presupuesto para la reparación orden número {idRepSeleccionada} ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <button className='btnAceptar' type='button' onClick={clickAceptarPresupuesto}>Aceptar</button>
+          <button className='btnCancelar' type='button' onClick={handleCloseAceptarPresupuesto} >
+            Cancelar
+          </button>
+        </DialogActions>
+      </Dialog>
+
+    {/* inicio componente del modal visualizar modificar */}
+    <BootstrapDialog
+        onClose={handleClose}
+        aria-labelledby="customized-dialog-title"
+        open={open}
+        fullWidth
+        maxWidth="md"
+      >
+        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+          Reparación - {modo}
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleClose}
+          sx={(theme) => ({
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: theme.palette.grey[500],
+          })}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent dividers>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ArrowDownwardIcon />}
+              aria-controls="panel1-content"
+              id="panel1-header"
+            >
+              <Typography component="span">Datos del cliente</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Divider />
+              <div className='mt-2'>
+                <Typography>
+                  <strong>Nombre:</strong>{" "+repSeleccionada.clienteNombre}
+                </Typography>
+                <Typography>
+                  <strong>Apellido:</strong>{" "+repSeleccionada.clienteApellido}
+                </Typography>
+                <Typography>
+                  <strong>Email:</strong>{" "+repSeleccionada.clienteEmail}
+                </Typography>
+                <Typography>
+                  <strong>Telefono:</strong>{" "+repSeleccionada.clienteTelefono}
+                </Typography>
+              </div>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ArrowDownwardIcon />}
+              aria-controls="panel2-content"
+              id="panel2-header"
+            >
+              <Typography component="span">Datos de la reparacion</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Divider />
+              <div className='mt-2'>
+                {/* Numero de orden */}
+                <div >
+                  <label htmlFor="numeroOrden" className="block mb-1 text-sm/6 font-medium text-gray-900"> <strong>Número de orden:</strong></label>
+                  <input value={repSeleccionada.id} disabled type="text" name="numeroOrden" id="numeroOrden" className="w-full bg-white block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"/>
+                </div>
+
+                {/* numero de serie  */}
+                <div>
+                  <label htmlFor="numeroSerie" className="block mb-1 text-sm/6 font-medium text-gray-900"><strong>Número de serie:</strong></label>
+                  <input value={repSeleccionada.numeroSerie} disabled type="text" name="numeroSerie" id="numeroSerie" className="w-full bg-white block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"/>
+                </div>
+                {/* aparato  */}
+                <div >
+                  <label htmlFor="aparato" className="block mb-1 text-sm/6 font-medium text-gray-900"><strong>Aparato:</strong></label>
+                  {/* <input value={repSeleccionada.producto.marca} disabled type="text" name="aparato" id="aparato" className="w-full bg-white block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"/> */}
+                </div>
+
+                {/* fecha de ingreso */}
+                <div >
+                  <label htmlFor="fechaIngreso" className="block mb-1 text-sm/6 font-medium text-gray-900"> <strong>Fecha de ingreso:</strong></label>
+                  <input value={ new Date(repSeleccionada.fecha).toLocaleDateString()} disabled type="text" name="fechaIngreso" id="fechaIngreso" className="w-full bg-white block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"/>
+                </div>
+                {/* Falla */}
+                <div>
+                  <label htmlFor="falla" className="block mb-1 text-sm/6 font-medium text-gray-900"> <strong>Descripción de falla/desperfecto</strong></label>
+                  <textarea value={repSeleccionada.descripcion} disabled name="falla" id="falla" rows="3" className="w-full block rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
+                </div>
+                {/* Estado */}
+                <div >
+                  <label htmlFor="estado" className="block mb-1 text-sm/6 font-medium text-gray-900"><strong>Estado</strong></label>
+                  <input value={repSeleccionada.estado} disabled type="text" name="estado" id="estado" className="w-full bg-white block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"/>
+                </div>
+            </div>
+            </AccordionDetails>
+          </Accordion>
+          { repSeleccionada.estado != "EnTaller" &&
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ArrowDownwardIcon />}
+              aria-controls="panel1-content"
+              id="panel1-header"
+            >
+              <Typography component="span">Datos del presupuesto</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Divider />
+              <div className='mt-2'>
+                <Typography>
+                  <strong>Descripción del presupuesto:</strong>{" "+repSeleccionada.descripcionPresupuesto}
+                </Typography>
+                <Typography>
+                  <strong>Fecha de entrega:</strong>{" "+ new Date(repSeleccionada.fechaPromesaEntrega).toLocaleDateString()}
+                </Typography>
+                <Typography>
+                  <strong>Costo:</strong>{" "+repSeleccionada.costo}
+                </Typography>
+              </div>
+            </AccordionDetails>
+          </Accordion>
+          }
+          {/* aca van las propiedades de la reparacion, en caso de ser modo modificar, el disabled es false 
+          en modo modificar, solo va a ser modificable la descripcion */}
+         
+        </DialogContent>
+          {modo === "Modificar" &&
+           <DialogActions>
+              <div>
+                <button type='button' className='btnAceptar'>Modificar</button>
+                <button type='button' onClick={handleClose}  className='btnCancelar'>Cancelar</button> 
+              </div>
+            </DialogActions>
+          }
+      </BootstrapDialog>
+      {/* fin componente del modal */}
+
       <div className='grid grid-cols-1 bg-gray-50 h-auto my-[20px] mx-[20px] gap-8 py-3 px-2'>
         <div className='col-span-1  my-[10px] m-[10px] flex justify-between'>
           <div className='flex gap-3 items-center justify-center p-2  '>
             <div onClick={()=>selectTab("EnTaller")}  className={`${tabSelected === "EnTaller" ? "border-blue-950" : "border-blue-800"} cursor-pointer border-b-4 border-blue-800  hover:border-blue-950  p-2`} >En taller</div>
             <div onClick={()=>selectTab("Presupuestada")} className={`${tabSelected === "Presupuestada" ? "border-blue-950" : "border-blue-800"} cursor-pointer border-b-4 border-blue-800  hover:border-blue-950  p-2`} >Presupuestadas</div>
-            <div onClick={()=>selectTab("Aceptada")} className={`${tabSelected === "Aceptada" ? "border-blue-950" : "border-blue-800"} cursor-pointer border-b-4 border-blue-800  hover:border-blue-950  p-2`} >Aceptadas</div>
+            <div onClick={()=>selectTab("PresupuestoAceptado")} className={`${tabSelected === "PresupuestoAceptado" ? "border-blue-950" : "border-blue-800"} cursor-pointer border-b-4 border-blue-800  hover:border-blue-950  p-2`} >Aceptadas</div>
             <div onClick={()=>selectTab("Terminada")} className={`${tabSelected === "Terminada" ? "border-blue-950" : "border-blue-800"} cursor-pointer border-b-4 border-blue-800  hover:border-blue-950  p-2`}  >Terminadas</div>
             <div onClick={()=>selectTab("Entregada")} className={`${tabSelected === "Entregada" ? "border-blue-950" : "border-blue-800"} cursor-pointer border-b-4 border-blue-800  hover:border-blue-950  p-2`} >Entregadas</div>
           </div>
@@ -154,15 +391,27 @@ export const ListadoReparaciones = () => {
                       <td className='text-center'>{r.id}</td> 
                       <td className='text-center'>{ new Date(r.fecha).toLocaleDateString()}</td>
                       <td className='text-center'>{r.clienteNombre + " "+r.clienteApellido}</td>
-                      <td className='text-center'>{r.producto.marca}</td>
+                      <td className='text-center'>{r.producto.marca +" "+r.producto.modelo}</td>
                       <td className='text-center'>{r.numeroSerie}</td>
                       <td className='text-center' > {r.descripcion}</td>
                       <td className='text-center flex gap-4 p-1'>
+                        <div title='Visualizar' className='btnIconosGrid'>
+                          <svg onClick={()=>onClickVisualizar(r.id)}  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                          </svg>
+
+                        </div>
                         <div title='Generar orden'  className='btnIconosGrid '>
                               {/* print */}
                               <svg onClick={()=>generarOrdSrv(r.id,user.idEmpresa,user.idSucursal)}  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
                                 <path fillRule="evenodd" d="M7.875 1.5C6.839 1.5 6 2.34 6 3.375v2.99c-.426.053-.851.11-1.274.174-1.454.218-2.476 1.483-2.476 2.917v6.294a3 3 0 0 0 3 3h.27l-.155 1.705A1.875 1.875 0 0 0 7.232 22.5h9.536a1.875 1.875 0 0 0 1.867-2.045l-.155-1.705h.27a3 3 0 0 0 3-3V9.456c0-1.434-1.022-2.7-2.476-2.917A48.716 48.716 0 0 0 18 6.366V3.375c0-1.036-.84-1.875-1.875-1.875h-8.25ZM16.5 6.205v-2.83A.375.375 0 0 0 16.125 3h-8.25a.375.375 0 0 0-.375.375v2.83a49.353 49.353 0 0 1 9 0Zm-.217 8.265c.178.018.317.16.333.337l.526 5.784a.375.375 0 0 1-.374.409H7.232a.375.375 0 0 1-.374-.409l.526-5.784a.373.373 0 0 1 .333-.337 41.741 41.741 0 0 1 8.566 0Zm.967-3.97a.75.75 0 0 1 .75-.75h.008a.75.75 0 0 1 .75.75v.008a.75.75 0 0 1-.75.75H18a.75.75 0 0 1-.75-.75V10.5ZM15 9.75a.75.75 0 0 0-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 0 0 .75-.75V10.5a.75.75 0 0 0-.75-.75H15Z" clipRule="evenodd" />
                               </svg>
+                          </div>
+                          <div title='Modificar' className='btnIconosGrid'>
+                            <svg onClick={()=>onClickModificar(r.id)} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                            </svg>
                           </div>
                         {r.estado == "EnTaller" &&
                           <>
@@ -177,7 +426,7 @@ export const ListadoReparaciones = () => {
                           <>
                               <div title='Aceptar' className='btnIconosGrid ' >
                               {/* aceptar */}
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
+                                <svg onClick={()=>handleClickOpenAceptarPresupuesto(r.id)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
                                   <path d="M7.493 18.5c-.425 0-.82-.236-.975-.632A7.48 7.48 0 0 1 6 15.125c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75A.75.75 0 0 1 15 2a2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23h-.777ZM2.331 10.727a11.969 11.969 0 0 0-.831 4.398 12 12 0 0 0 .52 3.507C2.28 19.482 3.105 20 3.994 20H4.9c.445 0 .72-.498.523-.898a8.963 8.963 0 0 1-.924-3.977c0-1.708.476-3.305 1.302-4.666.245-.403-.028-.959-.5-.959H4.25c-.832 0-1.612.453-1.918 1.227Z" />
                                 </svg>
                               </div>
