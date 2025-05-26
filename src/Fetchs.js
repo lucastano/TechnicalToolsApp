@@ -543,9 +543,72 @@ const postAceptarPresupuesto = async (id) => {
     console.error('Error:', error);
   }
 }
-const postCancelarPresupuesto = async (id) => {
+const postNoAceptarPresupuesto = async (id,costo,razon) => {
   //id costo razon
-const url = urlBase + '/api/Reparaciones/NoAceptarPresupuesto'
+const url = urlBase + `/api/Reparaciones/NoAceptarPresupuesto?id=${id}&costo=${costo}&razon=${razon}`
+const token = localStorage.getItem("Token");
+  const opciones = {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  try {
+    const response = await fetch(url, opciones);
+    console.log('response', response)
+    if (!response.ok) {
+      throw new Error('Error al crear el presupuesto');
+    }
+    return response.status;
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+const postTerminarReparacion = async (id,reparada) => {
+  console.log('id en el fetch de terminar reparacion', id)
+  //id costo razon
+const url = urlBase + `/api/Reparaciones/TerminarReparacion?id=${id}&reparada=${reparada}`
+const token = localStorage.getItem("Token");
+  const opciones = {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  try {
+    const response = await fetch(url, opciones);
+    console.log('response', response)
+    if (!response.ok) {
+      throw new Error('Error al crear el presupuesto');
+    }
+    return response.status;
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+const postEntregarReparacion = async (id) => {
+  //id costo razon
+const url = urlBase + `/api/Reparaciones/EntregarReparacion?id=${id}`
+const token = localStorage.getItem("Token");
+  const opciones = {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  try {
+    const response = await fetch(url, opciones);
+    console.log('response', response)
+    if (!response.ok) {
+      throw new Error('Error al crear el presupuesto');
+    }
+    return response.status;
+  } catch (error) {
+    console.error('Error:', error);
+  }
 }
 export {
   loginFetch,
@@ -565,5 +628,8 @@ export {
   loginprueba,
   getClienteByCi,
   postPresupuesto,
-  postAceptarPresupuesto
+  postAceptarPresupuesto,
+  postNoAceptarPresupuesto,
+  postTerminarReparacion,
+  postEntregarReparacion
 }

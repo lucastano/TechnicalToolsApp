@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { generarOrdSrv, getReparaciones, postAceptarPresupuesto } from '../Fetchs';
+import { generarOrdSrv, getReparaciones, postAceptarPresupuesto,postNoAceptarPresupuesto,postTerminarReparacion,postEntregarReparacion} from '../Fetchs';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -35,10 +35,14 @@ export const ListadoReparaciones = () => {
   // modo del modal
   const [modo, setmodo] = useState("")
   // reparacion seleccionada
-  const [repSeleccionada, setrepSeleccionada] = useState({})
+  const [repSeleccionada, setrepSeleccionada] = useState({producto:{}})
   const [idRepSeleccionada, setidRepSeleccionada] = useState(0)
   // trato de re-renderizar el componente para probar si se vuelve a hacer el fetch de reparaciones 
   const [renderizados, setrenderizados] = useState(0)
+  // valors de inputs de no aceptar presupuesto
+  const [costoNoAceptar, setcostoNoAceptar] = useState(0)
+  const [razonNoAceptar, setrazonNoAceptar] = useState("")
+
   const [reparaciones, setreparaciones] = useState([])
   const [user, setuser] = useState({})
   const [tabSelected, settabSelected] = useState("EnTaller")
@@ -130,8 +134,6 @@ export const ListadoReparaciones = () => {
         let counterClickOnOrdAux = counterClickOnOrd + 1
         setcounterClickOnOrd(counterClickOnOrdAux);
       }
-      //CERO - SIN FILTROS
-      // UNO - DECRECIENTE
       if(counterClickOnOrd === 1){
         ordenarDesc()
         console.log('es 2')
@@ -163,20 +165,51 @@ export const ListadoReparaciones = () => {
     const irPresupuestar = (id) => {
       navigate(`/Presupuestar/${id}`)
     }
+    //esta accion se usa  para abrir el modal de acciones sobre la reparacion, recibe el id de la reparacion y el modo 
+    // el modo se utiliza para saber los campos que va a tener el modal
+    const handleClickModalReparacionGeneral = (id,modo) => {
+      setmodo(modo)
+      setidRepSeleccionada(id)
+      setOpenAceptarPresupuesto(true);
+    }
+    //accion para cerrar el modal
+    const handleCloseAceptarPresupuesto = () => {
+      setOpenAceptarPresupuesto(false);
+    };
 
 
-    //  const [openAceptarPresupuesto, setOpenAceptarPresupuesto] = React.useState(false);
-
-  const handleClickOpenAceptarPresupuesto = (id) => {
-    setidRepSeleccionada(id)
-    setOpenAceptarPresupuesto(true);
-  };
-
-  const handleCloseAceptarPresupuesto = () => {
-    setOpenAceptarPresupuesto(false);
-  };
    const clickAceptarPresupuesto = async()=>{
+    console.log('idRepSeleccionada en aceptar presupuesto', idRepSeleccionada)
     const response = await postAceptarPresupuesto(idRepSeleccionada);
+    refresh()
+    setidRepSeleccionada(0)
+    handleCloseAceptarPresupuesto()
+   }
+   const accionNoAceptarPresupuesto = async () => {
+    // aca va el fetch de no aceptar presupuesto
+    const response = await postNoAceptarPresupuesto(idRepSeleccionada,costoNoAceptar,razonNoAceptar)
+    console.log('response', response)
+    console.log('accion no aceptar presupuesto disaparda ')
+    setidRepSeleccionada(0)
+    refresh()
+    handleCloseAceptarPresupuesto()
+   }
+
+   const accionTerminarReparacion = async() =>{
+    // aca va el fetch para terminar la reparacion 
+    // por ahora le pasamos true para probar, pero en realidad en la modal hay que agregarle un input de si fue reparada o no 
+    console.log('repSeleccionada.id en la accion de terminar reparacion', repSeleccionada.id)
+    const response = await postTerminarReparacion(idRepSeleccionada,true)
+    console.log('response', response)
+    setidRepSeleccionada(0)
+    refresh()
+    handleCloseAceptarPresupuesto()
+   }
+   const accionEntregarReparacion = async () =>{
+    // aca va el fetch para entregar la reparacion
+    const response = await postEntregarReparacion(idRepSeleccionada)
+    console.log('response entregar reparacion', response)
+    setidRepSeleccionada(0)
     refresh()
     handleCloseAceptarPresupuesto()
    }
@@ -190,20 +223,88 @@ export const ListadoReparaciones = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          Aceptar presupuesto de reparación
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Aceptar presupuesto para la reparación orden número {idRepSeleccionada} ?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <button className='btnAceptar' type='button' onClick={clickAceptarPresupuesto}>Aceptar</button>
-          <button className='btnCancelar' type='button' onClick={handleCloseAceptarPresupuesto} >
-            Cancelar
-          </button>
-        </DialogActions>
+        {modo =="AceptarPresupuesto" ?
+        <>
+          <DialogTitle id="alert-dialog-title">
+            Aceptar presupuesto de reparación
+          </DialogTitle>
+           <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Aceptar presupuesto para la reparación orden número {idRepSeleccionada} ?
+            </DialogContentText>
+          </DialogContent>
+           <DialogActions>
+            <button className='btnAceptar' type='button' onClick={clickAceptarPresupuesto}>Aceptar</button>
+            <button className='btnCancelar' type='button' onClick={handleCloseAceptarPresupuesto} >
+              Cancelar
+            </button>
+          </DialogActions>
+          </>
+          :
+          modo =="NoAceptarPresupuesto"?
+          <>
+            <DialogTitle id="alert-dialog-title">
+              No aceptar presupuesto de reparación
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                <label htmlFor='txtRazon'>Razon</label>
+                <textarea onChange={(e) => setrazonNoAceptar(e.target.value)} type='text' name='txtRazon' id='txtRazon' className="w-full bg-gray-100 block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" />
+                <label htmlFor='costo'>Costo</label>
+                <input onChange={(e)=> setcostoNoAceptar(e.target.value)} type='number' id='costo' name='costo' className="w-full  bg-gray-100 block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"></input>
+                <div className='mt-4'>
+                    Desea cancelar el presupuesto para la reparación orden número {idRepSeleccionada} ?
+                </div> 
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              {/* tengo que cambiar las acciones del btn aceptar  */}
+              <button className='btnAceptar' type='button' onClick={accionNoAceptarPresupuesto}>Aceptar</button>
+              <button className='btnCancelar' type='button' onClick={handleCloseAceptarPresupuesto} >
+                Cancelar
+              </button>
+            </DialogActions>
+          </>:
+          modo == "TerminarReparacion" ?
+          <>
+            <DialogTitle id="alert-dialog-title">
+               Terminar reparación
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Desea terminar la reparación con la orden orden número {idRepSeleccionada} ?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              {/* tengo que cambiar las acciones del btn aceptar  */}
+              <button className='btnAceptar' type='button' onClick={accionTerminarReparacion}>Aceptar</button>
+              <button className='btnCancelar' type='button' onClick={handleCloseAceptarPresupuesto} >
+                Cancelar
+              </button>
+            </DialogActions>
+          </> :
+          modo == "EntregarReparacion" ?
+          <>
+            <DialogTitle id="alert-dialog-title">
+               Entregar reparación
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Desea entregar la reparación con la orden orden número {idRepSeleccionada} ?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              {/* tengo que cambiar las acciones del btn aceptar  */}
+              <button className='btnAceptar' type='button' onClick={accionEntregarReparacion}>Aceptar</button>
+              <button className='btnCancelar' type='button' onClick={handleCloseAceptarPresupuesto} >
+                Cancelar
+              </button>
+            </DialogActions>
+          </> :
+          <p>accion desconocida</p>
+        }
+       
+       
       </Dialog>
 
     {/* inicio componente del modal visualizar modificar */}
@@ -256,7 +357,7 @@ export const ListadoReparaciones = () => {
               </div>
             </AccordionDetails>
           </Accordion>
-          <Accordion>
+          <Accordion defaultExpanded>
             <AccordionSummary
               expandIcon={<ArrowDownwardIcon />}
               aria-controls="panel2-content"
@@ -281,7 +382,7 @@ export const ListadoReparaciones = () => {
                 {/* aparato  */}
                 <div >
                   <label htmlFor="aparato" className="block mb-1 text-sm/6 font-medium text-gray-900"><strong>Aparato:</strong></label>
-                  {/* <input value={repSeleccionada.producto.marca} disabled type="text" name="aparato" id="aparato" className="w-full bg-white block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"/> */}
+                   <input value={repSeleccionada.producto.marca + " "+repSeleccionada.producto.modelo} disabled type="text" name="aparato" id="aparato" className="w-full bg-white block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"/> 
                 </div>
 
                 {/* fecha de ingreso */}
@@ -426,39 +527,34 @@ export const ListadoReparaciones = () => {
                           <>
                               <div title='Aceptar' className='btnIconosGrid ' >
                               {/* aceptar */}
-                                <svg onClick={()=>handleClickOpenAceptarPresupuesto(r.id)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
+                                <svg onClick={()=>handleClickModalReparacionGeneral(r.id,"AceptarPresupuesto")} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
                                   <path d="M7.493 18.5c-.425 0-.82-.236-.975-.632A7.48 7.48 0 0 1 6 15.125c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75A.75.75 0 0 1 15 2a2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23h-.777ZM2.331 10.727a11.969 11.969 0 0 0-.831 4.398 12 12 0 0 0 .52 3.507C2.28 19.482 3.105 20 3.994 20H4.9c.445 0 .72-.498.523-.898a8.963 8.963 0 0 1-.924-3.977c0-1.708.476-3.305 1.302-4.666.245-.403-.028-.959-.5-.959H4.25c-.832 0-1.612.453-1.918 1.227Z" />
                                 </svg>
                               </div>
-                              <div title='Cancelar' className='btnIconosGrid'>
+                              <div title='No aceptar' className='btnIconosGrid'>
                             {/* cancelar */}
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
+                                <svg onClick={()=>handleClickModalReparacionGeneral(r.id,"NoAceptarPresupuesto")} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M7.498 15.25H4.372c-1.026 0-1.945-.694-2.054-1.715a12.137 12.137 0 0 1-.068-1.285c0-2.848.992-5.464 2.649-7.521C5.287 4.247 5.886 4 6.504 4h4.016a4.5 4.5 0 0 1 1.423.23l3.114 1.04a4.5 4.5 0 0 0 1.423.23h1.294M7.498 15.25c.618 0 .991.724.725 1.282A7.471 7.471 0 0 0 7.5 19.75 2.25 2.25 0 0 0 9.75 22a.75.75 0 0 0 .75-.75v-.633c0-.573.11-1.14.322-1.672.304-.76.93-1.33 1.653-1.715a9.04 9.04 0 0 0 2.86-2.4c.498-.634 1.226-1.08 2.032-1.08h.384m-10.253 1.5H9.7m8.075-9.75c.01.05.027.1.05.148.593 1.2.925 2.55.925 3.977 0 1.487-.36 2.89-.999 4.125m.023-8.25c-.076-.365.183-.75.575-.75h.908c.889 0 1.713.518 1.972 1.368.339 1.11.521 2.287.521 3.507 0 1.553-.295 3.036-.831 4.398-.306.774-1.086 1.227-1.918 1.227h-1.053c-.472 0-.745-.556-.5-.96a8.95 8.95 0 0 0 .303-.54" />
                                 </svg>
                             </div>
                           </>
                         }
-                        {r.estado == "Aceptada" &&
+                        {r.estado == "PresupuestoAceptado" &&
                           <>
                               <div title='Terminar' className='btnIconosGrid ' >
-                              {/* aceptar */}
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
-                                  <path d="M7.493 18.5c-.425 0-.82-.236-.975-.632A7.48 7.48 0 0 1 6 15.125c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75A.75.75 0 0 1 15 2a2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23h-.777ZM2.331 10.727a11.969 11.969 0 0 0-.831 4.398 12 12 0 0 0 .52 3.507C2.28 19.482 3.105 20 3.994 20H4.9c.445 0 .72-.498.523-.898a8.963 8.963 0 0 1-.924-3.977c0-1.708.476-3.305 1.302-4.666.245-.403-.028-.959-.5-.959H4.25c-.832 0-1.612.453-1.918 1.227Z" />
+                              {/* terminar */}
+                                <svg onClick={() => handleClickModalReparacionGeneral(r.id,"TerminarReparacion")} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                                 </svg>
+
                               </div>
-                              <div title='Cancelar' className='btnIconosGrid'>
-                            {/* cancelar */}
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M7.498 15.25H4.372c-1.026 0-1.945-.694-2.054-1.715a12.137 12.137 0 0 1-.068-1.285c0-2.848.992-5.464 2.649-7.521C5.287 4.247 5.886 4 6.504 4h4.016a4.5 4.5 0 0 1 1.423.23l3.114 1.04a4.5 4.5 0 0 0 1.423.23h1.294M7.498 15.25c.618 0 .991.724.725 1.282A7.471 7.471 0 0 0 7.5 19.75 2.25 2.25 0 0 0 9.75 22a.75.75 0 0 0 .75-.75v-.633c0-.573.11-1.14.322-1.672.304-.76.93-1.33 1.653-1.715a9.04 9.04 0 0 0 2.86-2.4c.498-.634 1.226-1.08 2.032-1.08h.384m-10.253 1.5H9.7m8.075-9.75c.01.05.027.1.05.148.593 1.2.925 2.55.925 3.977 0 1.487-.36 2.89-.999 4.125m.023-8.25c-.076-.365.183-.75.575-.75h.908c.889 0 1.713.518 1.972 1.368.339 1.11.521 2.287.521 3.507 0 1.553-.295 3.036-.831 4.398-.306.774-1.086 1.227-1.918 1.227h-1.053c-.472 0-.745-.556-.5-.96a8.95 8.95 0 0 0 .303-.54" />
-                                </svg>
-                            </div>
                           </>
                         }
                         {r.estado == "Terminada" &&
                           <>
                               <div title='Entregar' className='btnIconosGrid ' >
                               {/* Entregar */}
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
+                                <svg onClick={() => handleClickModalReparacionGeneral(r.id,"EntregarReparacion")} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
                                 </svg>
                               </div>

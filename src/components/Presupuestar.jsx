@@ -104,7 +104,7 @@ export const Presupuestar = () => {
                 <input onChange={onChangeCosto}  type="number" name="costo" id="costo" className=" w-full lg:w-[20%] rounded-md bg-white block min-w-0 py-1.5 pr-3 pl-1 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" placeholder="Costo de la reparacion $"/>
             </div>
             <div className='col-span-1 '>
-                <label htmlFor="fechaEntrega" className="block mb-1 text-sm/6 font-medium text-gray-900">Fecha aproximada del presupuesto</label>
+                <label htmlFor="fechaEntrega" className="block mb-1 text-sm/6 font-medium text-gray-900">Fecha aproximada de entrega</label>
                     <input  
                     type="date"
                     onChange={onChangeFecha}
