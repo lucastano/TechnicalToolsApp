@@ -12,6 +12,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Divider } from '@mui/material';
 
+
 export const AccionesReparacion = ({estado="EnTaller",objeto="object"}) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [verDetalles, setverDetalles] = useState(false);
