@@ -14,7 +14,6 @@ export const Presupuestar = () => {
     const [mensajeError, setmensajeError] = useState("")
     const [mensajeSuccess, setmensajeSuccess] = useState("")
 
-    
     const onHandleAdd = async (event) => {
         event.preventDefault()
         const data = {
