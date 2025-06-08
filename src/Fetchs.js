@@ -129,6 +129,34 @@ async function getClientes() {
   }
 }
 
+async function getReparacionesDeClientePorCedula(cedula) {
+  const url = urlBase +`/api/Reparaciones/ReparacionesDeClienteCedula?cedula=${cedula}`
+  const token = localStorage.getItem("Token");
+  const opciones = {
+    method: "GET",
+    headers: {
+      accept: "text/plain",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  try {
+    const respuesta = await fetch(url, opciones);
+    console.log('respuesta', respuesta)
+    if (!respuesta.ok) {
+      throw new Error(`HTTP error! status: ${respuesta.status}`);
+    } else {
+      let datos = await respuesta.text()
+      if (datos !== "No tiene reparaciones"){
+        datos = await respuesta.json()
+      }
+      return datos;
+    }
+  } catch (error) {
+    return error.message;
+  }
+}
+
 async function getClienteByCi(ci) {
   console.log('ci', ci)
   const url = urlBase + `/api/Clientes/ObtenerClientePorCi?ci=${ci}`
@@ -230,27 +258,28 @@ async function getReparaciones(user) {
   }
 }
 async function getReparacionesPorCI(cedula) {
-  const url = urlBase + `/api/Reparaciones/ReparacionesDeClienteCedula?cedula=${cedula}`;
-  const token = localStorage.getItem("Token");
-  const opciones = {
-    method: "GET",
-    headers: {
-      accept: "*/*",
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  console.log('cedula', cedula)
+  // const url = urlBase + `/api/Reparaciones/ReparacionesDeClienteCedula?cedula=${cedula}`;
+  // const token = localStorage.getItem("Token");
+  // const opciones = {
+  //   method: "GET",
+  //   headers: {
+  //     accept: "*/*",
+  //     Authorization: `Bearer ${token}`,
+  //   },
+  // };
 
-  try {
-    const respuesta = await fetch(url, opciones);
-    if (!respuesta.ok) {
-      throw new Error(`HTTP error! status: ${respuesta.status}`);
-    } else {
-      const datos = await respuesta.json();
-      console.log(datos)
-    }
-  } catch (error) {
-    throw error;
-  }
+  // try {
+  //   const respuesta = await fetch(url, opciones);
+  //   if (!respuesta.ok) {
+  //     throw new Error(`HTTP error! status: ${respuesta.status}`);
+  //   } else {
+  //     const datos = await respuesta.json();
+  //     console.log(datos)
+  //   }
+  // } catch (error) {
+  //   throw error;
+  // }
 }
 async function getEmpresa(idEmpresa){
   const url = urlBase + `/api/Empresas/ObtenerEmpresaPorId?id=${idEmpresa}`
@@ -632,5 +661,6 @@ export {
   postAceptarPresupuesto,
   postNoAceptarPresupuesto,
   postTerminarReparacion,
-  postEntregarReparacion
+  postEntregarReparacion,
+  getReparacionesDeClientePorCedula
 }
