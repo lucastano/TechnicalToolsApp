@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getEmpresa } from '../Fetchs';
+import { current } from '@reduxjs/toolkit';
 const navigation = [
-  { name: 'Reparaciones',Direccion:'Reparaciones', current: true }
+  { name: 'Reparaciones',Direccion:'Reparaciones', current: true },
+  {name:'Clientes',Direccion:'Clientes',current:true}
 ]
 
 export const NavBar = ({setAutenticacion}) => {

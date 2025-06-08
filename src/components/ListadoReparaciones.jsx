@@ -442,7 +442,9 @@ export const ListadoReparaciones = () => {
           }
       </BootstrapDialog>
       {/* fin componente del modal */}
-
+      <div className='title p-2'>
+          <h1>Listado de reparaciones</h1>
+      </div>
       <div className='grid grid-cols-1 bg-gray-50 h-auto my-[20px] mx-[20px] gap-8 py-3 px-2'>
         <div className='col-span-1  my-[10px] m-[10px] flex justify-between'>
           <div className='flex gap-3 items-center justify-center p-2  '>
@@ -489,13 +491,13 @@ export const ListadoReparaciones = () => {
                 {
                   currentItems.map((r,i) =>(
                     <tr key={i} className='even:bg-gray-200 hover:bg-gray-100 transition h-7'>
-                      <td className='text-center'>{r.id}</td> 
-                      <td className='text-center'>{ new Date(r.fecha).toLocaleDateString()}</td>
-                      <td className='text-center'>{r.clienteNombre + " "+r.clienteApellido}</td>
-                      <td className='text-center'>{r.producto.marca +" "+r.producto.modelo}</td>
-                      <td className='text-center'>{r.numeroSerie}</td>
-                      <td className='text-center' > {r.descripcion}</td>
-                      <td className='text-center flex gap-4 p-1'>
+                      <td className='txtRows'>{r.id}</td> 
+                      <td className='txtRows'>{ new Date(r.fecha).toLocaleDateString()}</td>
+                      <td className='txtRows'>{r.clienteNombre + " "+r.clienteApellido}</td>
+                      <td className='txtRows'>{r.producto.marca +" "+r.producto.modelo}</td>
+                      <td className='txtRows'>{r.numeroSerie}</td>
+                      <td className='txtRows' > {r.descripcion}</td>
+                      <td className='txtRows  flex gap-4 p-1'>
                         <div title='Visualizar' className='btnIconosGrid'>
                           <svg onClick={()=>onClickVisualizar(r.id)}  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />

@@ -1,6 +1,6 @@
 
 // const urlBase = 'https://proyectoserviceapirest20240901142836.azurewebsites.net/api/'
-const urlBase ='https://lucast-001-site1.ptempurl.com'
+const urlBase ='http://lucast-001-site1.ptempurl.com'
 //endpoint aun no implementado, devuelve el usuario solo con el token 
 // el token no enviarlo como body, sino como header, ver como a partir de eso obtener el usuario con los claims del token, lo mas seguro 
 // es que tenga que crear algun procedimiento mas en el backend
@@ -122,6 +122,7 @@ async function getClientes() {
       throw new Error(`HTTP error! status: ${respuesta.status}`);
     } else {
       const datos = await respuesta.json();
+      return datos;
     }
   } catch (error) {
     throw error;

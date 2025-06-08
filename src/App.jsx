@@ -10,6 +10,7 @@ import { Empresa } from './components/Empresa';
 import { NuevaReparacion } from './components/NuevaReparacion';
 import {DashBoardGrid} from './components/DashBoardGrid';
 import { Presupuestar } from './components/Presupuestar';
+import { ListadoClientes } from './components/ListadoClientes';
 function App() {
   return (
     <>
@@ -26,6 +27,7 @@ function App() {
             <Route path='/NuevaReparacion' element={<NuevaReparacion />} />
             <Route path='/DashBoard' element = {<DashBoardGrid/>}/>
             <Route path='/Presupuestar/:id' element={<Presupuestar/>} />
+            <Route path='/Clientes' element={<ListadoClientes/>}/>
           </Route>
         </Route>
       </Routes>

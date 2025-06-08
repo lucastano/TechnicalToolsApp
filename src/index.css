@@ -16,8 +16,14 @@
   .btnAceptar {
     @apply  bg-green-600 text-white m-2  w-[100px] h-[40px] hover:bg-green-700 cursor-pointer
   }
+  .btnAceptarFiltros {
+    @apply bg-green-700 text-white text-sm m-2 py-1 px-3 cursor-pointer hover:bg-green-600
+  }
+  .btnResetFiltros {
+    @apply bg-red-600 text-white text-sm m-2 py-1 px-3 cursor-pointer hover:bg-red-800
+  }
   .btnAgregar {
-    @apply  bg-green-700 text-white m-2  w-[100px] h-[40px] hover:bg-green-600 text-center rounded-sm
+    @apply  bg-green-700 text-white  w-[100px] h-[40px] hover:bg-green-600 text-center rounded-sm
   }
   .btnAddSmall {
     @apply bg-green-700 text-white m-2 w-[40px] h-[40px] text-xl hover:bg-green-600 flex items-center justify-center
@@ -34,4 +40,23 @@
   .btnIconosGrid {
     @apply bg-blue-900 text-white rounded-sm p-1 hover:bg-blue-950 cursor-pointer 
   }
+  .txtError {
+    @apply text-red-800 text-sm
+  }
+
+  .inputsTxt {
+    @apply w-full block  bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-800 sm:text-sm/6
+  }
+  .inputsSmallTxt{
+    @apply p-2 bg-white w-40 h-8 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-800
+  }
+
+  .title {
+    @apply bg-gray-200 text-xl font-thin
+  }
+  .txtRows {
+    @apply font-mono text-sm px-4 text-left
+  }
  }
+
+ /* font-thin */
