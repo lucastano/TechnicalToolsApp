@@ -15,7 +15,7 @@ import Typography from '@mui/material/Typography';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import Divider from '@mui/material/Divider';
 import DialogContentText from '@mui/material/DialogContentText';
-
+import { Loading } from './Loading';
 
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -51,6 +51,8 @@ export const ListadoReparaciones = () => {
   const [currentPage, setcurrentPage] = useState(1)
   const [totalPage, settotalPage] = useState(0)
   const [counterClickOnOrd, setcounterClickOnOrd] = useState(1)
+
+  const [loading, setloading] = useState(true)
     useEffect(() => {
       cargarReparaciones()
     }, [])
@@ -86,10 +88,23 @@ export const ListadoReparaciones = () => {
       handleClickOpen()
     }
     const cargarReparaciones = async () => {
-      const usuarioLog = JSON.parse(localStorage.getItem('UsuarioLog'))
-      setuser(usuarioLog)
-      const reparacionesResponse = await getReparaciones(usuarioLog)
-      setreparaciones(reparacionesResponse);
+
+      try
+      { 
+        const usuarioLog = JSON.parse(localStorage.getItem('UsuarioLog'))
+        setuser(usuarioLog)
+        const reparacionesResponse = await getReparaciones(usuarioLog)
+        setreparaciones(reparacionesResponse);
+      }
+      catch(err)
+      {
+        console.log('err', err)
+      }
+      finally
+      {
+        setloading(false)
+      }
+    
     }
     const reparacionesFiltradas = reparaciones.filter((r) => r.estado === tabSelected);
     useEffect(() => {
@@ -216,6 +231,7 @@ export const ListadoReparaciones = () => {
   
   return (
     <>
+    {loading && <Loading/>}
     {/* inicia el modal para aceptar un presupuesto */}
     <Dialog
         open={openAceptarPresupuesto}

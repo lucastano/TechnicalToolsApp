@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { getClientes , postCliente,getReparacionesDeClientePorCedula} from '../Fetchs'
-import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Divider } from '@mui/material';
 import { useNavigate } from "react-router-dom";
+import { Loading } from './Loading';
 
 export const ListadoClientes = () => {
     //navegacion 
@@ -35,6 +34,9 @@ export const ListadoClientes = () => {
     // reparaciones de cliente 
     const [reparacionesCliente, setreparacionesCliente] = useState([])
 
+
+    //loading 
+    const [loading, setloading] = useState(true)
     const [clientesAux, setclientesAux] = useState([])
     const [clientes, setClientes] = useState([])
     const [email, setEmail] = useState("")
@@ -136,19 +138,29 @@ export const ListadoClientes = () => {
     }
 
     const getClientesStart = async () =>{
-        const response = await getClientes();
-        const list = response.clientes;
-        console.log('list', list)
-        if (ordenAZ){
-            list.sort((a,b)=>a.nombre.localeCompare(b.nombre));
+        try
+        {
+            const response = await getClientes();
+            const list = response.clientes;
+            if (ordenAZ){
+                list.sort((a,b)=>a.nombre.localeCompare(b.nombre));
+            }
+            else {
+                list.sort((a,b)=>b.nombre.localeCompare(a.nombre));
+            }
+            setClientes(response.clientes)
+            setclientesAux(response.clientes)
+            const total = Math.ceil(response.clientes.length / itemPerPage);
+            settotalPage(total);
         }
-        else {
-            list.sort((a,b)=>b.nombre.localeCompare(a.nombre));
+        catch(err)
+        {
+            console.log('err', err)
         }
-        setClientes(response.clientes)
-        setclientesAux(response.clientes)
-         const total = Math.ceil(response.clientes.length / itemPerPage);
-        settotalPage(total);
+        finally
+        {
+            setloading(false)
+        }      
     }
 
 
@@ -245,6 +257,7 @@ export const ListadoClientes = () => {
 
   return (
     <>
+    
         <Dialog
         open={open}
         onClose={handleClose}
@@ -310,6 +323,7 @@ export const ListadoClientes = () => {
             <button className='btnCancelar' onClick={handleClose}>{modoModal === "Crear" ? "Cancelar":"Volver"}</button>
         </DialogActions>
       </Dialog>
+      {loading && <Loading/>}
         <div className='title p-2'>
             <h1>Listado de clientes</h1>
         </div>
